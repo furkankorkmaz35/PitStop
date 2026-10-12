@@ -1,0 +1,46 @@
+@model IEnumerable<PitStop.Models.PartReview>
+
+@{
+    ViewData["Title"] = "Parça İncelemeleri";
+}
+
+<section class="hero compact">
+    <p class="eyebrow">PARÇA KARŞILAŞTIRMA</p>
+    <h1>Doğru parçayı seç.</h1>
+    <p>Orijinal ve yan sanayi seçeneklerini araç uyumu ve kullanıcı deneyimiyle değerlendir.</p>
+</section>
+
+<section class="section">
+    <p class="eyebrow">TOPLULUK İNCELEMELERİ</p>
+    <h2>Uyumlu parça notları</h2>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Parça</th>
+                    <th>Seçenek</th>
+                    <th>Araç uyumu</th>
+                    <th>Artıları</th>
+                    <th>Dikkat</th>
+                    <th>Puan</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var review in Model)
+                {
+                    <tr>
+                        <td><strong>@review.Part</strong></td>
+                        <td><span class="tag">@review.Type</span></td>
+                        <td>@review.Vehicle</td>
+                        <td>@review.Pros</td>
+                        <td>@review.Cons</td>
+                        <td>★ @review.Score</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <p class="muted">Uyumluluğu sipariş öncesi şasi numarası ve üretici kataloğuyla doğrulayın.</p>
+</section>

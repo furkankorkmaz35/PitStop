@@ -1,0 +1,30 @@
+@model IEnumerable<PitStop.Models.Guide>
+
+@{
+    ViewData["Title"] = "DIY Rehber";
+}
+
+<section class="hero compact">
+    <p class="eyebrow">KENDİN YAP REHBERİ</p>
+    <h1>Bakım bilgisi, adım adım.</h1>
+    <p>Temel kontrolleri öğren; güvenlik ve üretici tavsiyelerini önceliklendir.</p>
+</section>
+
+<section class="section">
+    <p class="eyebrow">BAŞLANGIÇ REHBERLERİ</p>
+    <h2>Bakım kütüphanesi</h2>
+
+    <div class="guide-list">
+        @foreach (var guide in Model)
+        {
+            <article class="guide">
+                <div>
+                    <span class="tag">@guide.Difficulty</span>
+                    <h3>@guide.Title</h3>
+                    <p>@guide.Summary</p>
+                </div>
+                <span class="duration">@guide.Duration</span>
+            </article>
+        }
+    </div>
+</section>
