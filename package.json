@@ -1,0 +1,19 @@
+{
+  "name": "pitstop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Araç sahipleri için MVC tabanlı bakım ve deneyim rehberi",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0"
+  }
+}

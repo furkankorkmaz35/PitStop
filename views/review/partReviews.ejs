@@ -1,0 +1,41 @@
+<%- include('../partials/header') %>
+<section class="hero compact">
+    <p class="eyebrow">PARÇA KARŞILAŞTIRMA</p>
+    <h1>Doğru parçayı seç.</h1>
+    <p>Orijinal ve yan sanayi seçeneklerini araç uyumu ve kullanıcı deneyimiyle değerlendir.</p>
+</section>
+
+<section class="section">
+    <p class="eyebrow">TOPLULUK İNCELEMELERİ</p>
+    <h2>Uyumlu parça notları</h2>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Parça</th>
+                    <th>Seçenek</th>
+                    <th>Araç uyumu</th>
+                    <th>Artıları</th>
+                    <th>Dikkat</th>
+                    <th>Puan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% reviews.forEach(review => { %>
+                    <tr>
+                        <td><strong><%= review.part %></strong></td>
+                        <td><span class="tag"><%= review.type %></span></td>
+                        <td><%= review.vehicle %></td>
+                        <td><%= review.pros %></td>
+                        <td><%= review.cons %></td>
+                        <td>★ <%= review.score %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <p class="muted">Uyumluluğu sipariş öncesi şasi numarası ve üretici kataloğuyla doğrulayın.</p>
+</section>
+<%- include('../partials/footer') %>

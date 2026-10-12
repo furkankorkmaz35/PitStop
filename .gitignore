@@ -1,8 +1,4 @@
-# Build output
-bin/
-obj/
-
-# Visual Studio user files
-.vs/
-*.user
-*.suo
+node_modules/
+.env
+npm-debug.log*
+.DS_Store

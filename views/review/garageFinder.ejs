@@ -1,0 +1,32 @@
+<%- include('../partials/header') %>
+<section class="hero compact">
+    <p class="eyebrow">USTA VE SERVİS REHBERİ</p>
+    <h1>Aracını bilen servisi bul.</h1>
+    <p>Şehir ve marka uzmanlığına göre önerileri incele.</p>
+
+    <form method="get" class="filters">
+        <input name="city" placeholder="Şehir ara" />
+        <button type="submit">Servis ara</button>
+    </form>
+</section>
+
+<section class="section">
+    <p class="eyebrow">ÖRNEK LİSTE</p>
+    <h2>Servis önerileri</h2>
+
+    <div class="guide-list">
+        <% garages.forEach(garage => { %>
+            <article class="guide">
+                <div>
+                    <span class="eyebrow"><%= garage.city %> · <%= garage.brands %></span>
+                    <h3><%= garage.name %></h3>
+                    <p><%= garage.specialty %></p>
+                </div>
+                <strong>★ <%= garage.score %></strong>
+            </article>
+        <% }) %>
+    </div>
+
+    <p class="muted">Örnek işletmeler temsili veridir; gerçek öneriler kullanıcı katkısıyla doğrulanacaktır.</p>
+</section>
+<%- include('../partials/footer') %>

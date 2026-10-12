@@ -18,46 +18,50 @@ Araç sahiplerinin ve ikinci el araç almayı düşünenlerin ihtiyaç duyduğu 
 
 ## Kullanılan teknolojiler
 
-- C# ve .NET 8
-- ASP.NET Core MVC
-- Razor Views (`.cshtml`)
+- Node.js 22 veya üzeri
+- Express 5
+- EJS Views (`.ejs`)
 - HTML ve CSS
 
 ## Mimari
 
-Uygulama MVC düzenini kullanır. İstek ilgili Controller action’ına gelir; Controller örnek veriyi alıp Razor View’e gönderir. View, veriyi HTML olarak gösterir ve görünümü `wwwroot/css/site.css` dosyasındaki stiller belirler.
+Uygulama MVC düzenini kullanır. İstek ilgili Express router üzerinden Controller fonksiyonuna gelir; Controller örnek veriyi alıp EJS View’e gönderir. View, veriyi HTML olarak gösterir ve görünümü `public/css/site.css` dosyasındaki stiller belirler.
 
 | Controller | Sayfalar | Sorumluluk |
 | --- | --- | --- |
-| `VehicleController` | `Catalog`, `Detail` | Araç arama, katalog ve araç bilgileri |
-| `MaintenanceController` | `Logs`, `Guide` | Bakım kayıtları ve DIY içerikleri |
-| `ReviewController` | `PartReviews`, `GarageFinder` | Parça karşılaştırması ve servis önerileri |
+| `vehicleController.js` | `Catalog`, `Detail` | Araç arama, katalog ve araç bilgileri |
+| `maintenanceController.js` | `Logs`, `Guide` | Bakım kayıtları ve DIY içerikleri |
+| `reviewController.js` | `PartReviews`, `GarageFinder` | Parça karşılaştırması ve servis önerileri |
 
-Örnek kayıtlar `Data/DemoData.cs` dosyasında tutulur. Model sınıfları `Models` klasöründedir. İlerleyen geliştirme aşamalarında örnek verilerin veritabanı ve uygulama servisleri üzerinden sağlanması planlanmaktadır.
+Örnek kayıtlar `data/demoData.js` dosyasında tutulur. Model sınıfları `models` klasöründedir. İlerleyen geliştirme aşamalarında örnek verilerin veritabanı ve uygulama servisleri üzerinden sağlanması planlanmaktadır.
 
 ## Gereksinimler
 
-- .NET 8 SDK
-- Visual Studio kullanılıyorsa **ASP.NET ve web geliştirme** iş yükü
+- Node.js 22 veya üzeri ve npm
 
 ## Çalıştırma
 
-### Visual Studio ile
-
-1. `PitStop.csproj` dosyasını Visual Studio’da açın.
-2. NuGet paketlerinin geri yüklenmesini bekleyin.
-3. Çalıştırma profili olarak `PitStop` seçiliyken **F5** tuşuna basın.
-
-### Terminal ile
-
-Proje klasöründe terminal açıp şu komutları çalıştırın:
+Proje klasöründe:
 
 ```bash
-dotnet restore
-dotnet run
+npm ci
+npm start
 ```
 
-Uygulama başladığında terminalde verilen yerel adresi tarayıcıda açın. Ana sayfa araç kataloğudur.
+Tarayıcıda http://localhost:3000 adresini açın. Ana sayfa araç kataloğudur.
+İsteğe bağlı olarak `PORT` ortam değişkeniyle port değiştirilebilir.
+
+Geliştirme sırasında dosya değişikliklerinde sunucuyu yeniden başlatmak için:
+
+```bash
+npm run dev
+```
+
+Sayfa ve filtre kontrollerini çalıştırmak için:
+
+```bash
+npm test
+```
 
 ## Sayfa adresleri
 
@@ -74,14 +78,16 @@ Katalogda marka ve motor alanları; servis bulma sayfasında şehir alanı filtr
 
 ```text
 PitStop/
-├── Controllers/       # MVC Controller sınıfları
-├── Data/              # Sunum için örnek veriler
-├── Models/            # Araç, bakım, rehber, parça ve servis modelleri
-├── Properties/        # Yerel çalıştırma ayarları
-├── Views/             # Controller sayfaları ve ortak Razor layout
-├── wwwroot/css/       # Responsive site stilleri
-├── PitStop.csproj
-└── Program.cs
+├── controllers/      # Araç, bakım ve inceleme controller fonksiyonları
+├── data/             # Sunum için örnek veriler
+├── models/           # Araç, bakım, rehber, parça ve servis modelleri
+├── routes/           # URL ve controller eşleştirmeleri
+├── views/            # EJS sayfaları ve ortak header/footer parçaları
+├── public/css/       # Responsive site stilleri
+├── test/             # Sayfa ve filtre kontrolleri
+├── app.js            # Express uygulaması
+├── server.js         # HTTP sunucusu
+└── package.json
 ```
 
 ## Veri hakkında

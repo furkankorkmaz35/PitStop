@@ -1,0 +1,58 @@
+<%- include('../partials/header') %>
+<section class="hero">
+    <p class="eyebrow">SAHİPLİK DENEYİMİ, TEK YERDE</p>
+    <h1>Aracını tanı.<br /><em>Sürprizleri azalt.</em></h1>
+    <p>Model ve motor tipine göre kronik sorunları, bakım kayıtlarını ve parça deneyimlerini keşfet.</p>
+
+    <form method="get" class="filters">
+        <input name="brand" placeholder="Marka ara" />
+        <input name="engine" placeholder="Motor tipi ara" />
+        <button type="submit">Filtrele</button>
+    </form>
+</section>
+
+<section class="section">
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">ARAÇ KATALOĞU</p>
+            <h2>Popüler model ve motorlar</h2>
+        </div>
+        <span class="count"><%= vehicles.length %> araç</span>
+    </div>
+
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Marka / Model</th>
+                    <th>Motor</th>
+                    <th>Yıl</th>
+                    <th>Bilinen konu</th>
+                    <th>Seviye</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% vehicles.forEach(vehicle => { %>
+                    <tr>
+                        <td>
+                            <strong><%= vehicle.brand %> <%= vehicle.model %></strong>
+                            <small><%= vehicle.fuel %> · <%= vehicle.power %> bg</small>
+                        </td>
+                        <td><%= vehicle.engine %></td>
+                        <td><%= vehicle.year %></td>
+                        <td><%= vehicle.knownIssue %></td>
+                        <td><span class="tag"><%= vehicle.issueLevel %></span></td>
+                        <td>
+                            <a class="arrow"
+                               href="/Vehicle/Detail?brand=<%= encodeURIComponent(vehicle.brand) %>&amp;model=<%= encodeURIComponent(vehicle.model) %>">
+                                İncele ↗
+                            </a>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</section>
+<%- include('../partials/footer') %>
