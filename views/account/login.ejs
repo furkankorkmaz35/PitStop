@@ -1,0 +1,24 @@
+<%- include('../partials/header') %>
+<section class="account-page" aria-labelledby="account-title">
+    <div class="account-card">
+        <p class="eyebrow">PITSTOP HESABI</p>
+        <% if (currentUser) { %>
+            <h1 id="account-title">Tekrar hoş geldin.</h1>
+            <p class="account-lead"><strong><%= currentUser.name %></strong>, demo oturumun açık. Bu prototipte hesap alanı giriş akışını göstermek için hazırlanmıştır.</p>
+            <% if (welcome) { %><p class="account-message" role="status">Demo oturumu başarıyla açıldı.</p><% } %>
+            <form action="/Account/Logout" method="post"><button class="button" type="submit">Oturumu kapat</button></form>
+        <% } else { %>
+            <h1 id="account-title">Garajına giriş yap.</h1>
+            <p class="account-lead">Bakım ve araç deneyimini PitStop’ta takip etmeye başla.</p>
+            <% if (error) { %><p class="account-error" role="alert"><%= error %></p><% } %>
+            <form action="/Account/Login" method="post" class="account-form">
+                <div class="field"><label class="field__label" for="email">E-posta</label><input class="input" id="email" name="email" type="email" autocomplete="email" required value="<%= email %>" placeholder="ornek@mail.com"></div>
+                <div class="field"><label class="field__label" for="password">Parola</label><input class="input" id="password" name="password" type="password" autocomplete="current-password" minlength="6" required placeholder="En az 6 karakter"></div>
+                <button class="button" type="submit">Demo girişi yap <span aria-hidden="true">↗</span></button>
+            </form>
+            <p class="account-demo-note">Eğitim prototipi: herhangi bir geçerli e-posta ve en az 6 karakterli parola ile demo oturumu açılır. Gerçek hesap/parola doğrulaması ve kişisel veri kaydı yoktur.</p>
+        <% } %>
+    </div>
+    <aside class="account-aside"><p class="eyebrow">ARAÇ SAHİPLİĞİ GÜNLÜĞÜ</p><h2>Bakımını hatırla.<br>Yoluna güvenle devam et.</h2><p>PitStop; araç kataloğu, bakım rehberleri ve parça karşılaştırmalarını tek yerde bir araya getirir.</p></aside>
+</section>
+<%- include('../partials/footer') %>

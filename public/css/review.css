@@ -28,3 +28,15 @@
   .review-filter .field { max-width: none; }
   .review-card, .review-empty, .review-note { padding: var(--space-5); }
 }
+
+.review-card__demo { margin: var(--space-4) 0 0; padding-top: var(--space-3); border-top: 1px solid var(--color-border); color: var(--color-muted); font-size: var(--text-xs); }
+.review-facts dd { overflow-wrap: anywhere; }
+
+.garage-card { align-self: start; }
+.garage-card__summary { min-height: 3.2em; margin: 0; color: var(--color-muted); font-size: var(--text-sm); line-height: 1.6; }
+.garage-card__details { margin-top: var(--space-5); border-top: 1px solid var(--color-border); }
+.garage-card__details > summary { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-4) 0 0; color: var(--color-accent-hover); font-size: var(--text-sm); font-weight: 600; cursor: pointer; list-style: none; }
+.garage-card__details > summary::-webkit-details-marker { display: none; }
+.garage-card__details > summary span { transition: transform var(--motion-fast); }
+.garage-card__details[open] > summary span { transform: rotate(180deg); }
+.garage-card__details .review-facts { margin-top: var(--space-3); }

@@ -3,14 +3,14 @@
     <div>
         <p class="eyebrow">BAKIM KÜTÜPHANESİ</p>
         <h1 id="guide-title">Aracını tanımaya buradan başla.</h1>
-        <p>Temel bakım konularına kısa bir bakış. Zorluk ve tahmini süre bilgileriyle içerikleri incele.</p>
+        <p>Günlük kontrollerden temel bakım bilgilerine kadar, güvenli ve anlaşılır adımlar.</p>
     </div>
     <%- include('../components/linkButton', { href: '/Maintenance/Logs', label: 'Örnek bakım kayıtları', variant: 'secondary' }) %>
 </section>
 <section class="section" aria-labelledby="guides-title">
     <div class="section-head">
         <div><p class="eyebrow">KENDİN YAP REHBERİ</p><h2 id="guides-title">Bakım bilgisi, adım adım.</h2></div>
-        <span class="count"><%= guides.length %> konu özeti</span>
+        <span class="count"><%= guides.length %> rehber</span>
     </div>
     <div class="maintenance-guides">
         <% guides.forEach((guide, index) => { %>
@@ -22,14 +22,20 @@
             <h3><%= guide.title %></h3>
             <p><%= guide.summary %></p>
             <div class="maintenance-guide__duration"><span>Tahmini süre</span><strong><%= guide.duration %></strong></div>
+            <% if (guide.steps.length) { %>
+            <details class="maintenance-guide__details">
+                <summary>Adımları ve güvenlik notunu gör</summary>
+                <ol><% guide.steps.forEach(step => { %><li><%= step %></li><% }) %></ol>
+                <p><strong>Güvenlik:</strong> <%= guide.safetyNote %></p>
+            </details>
+            <% } %>
         </article>
         <% }) %>
     </div>
-    <p class="muted">Bu içerikler örnek konu özetleridir; ayrıntılı uygulama adımları henüz bulunmuyor.</p>
 </section>
 <aside class="section maintenance-note" aria-labelledby="guide-note-title">
-    <p class="eyebrow">BAŞLAMADAN ÖNCE</p>
+    <p class="eyebrow">ÖNEMLİ</p>
     <h2 id="guide-note-title">Önce aracının kitapçığı.</h2>
-    <p>Bakım aralıkları ve parça standartları araca göre değişir. Üretici talimatlarını esas al; emin olmadığın işlemler için uzman desteği al.</p>
+    <p>Rehberler eğitim amaçlı genel bilgilerdir. Araç ve motor sürümüne göre işlemler değişebilir. Fren, yakıt, yüksek gerilim ve sıcak motor sistemlerindeki işleri uzman servise bırakın; üretici talimatlarını esas alın.</p>
 </aside>
 <%- include('../partials/footer') %>
