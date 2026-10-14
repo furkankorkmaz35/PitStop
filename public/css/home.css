@@ -109,7 +109,8 @@
 
 /* Scroll narrative: native page scroll drives a pinned composition. */
 .vehicle-stage__viewport, .vehicle-stage__viewport:active { cursor: default; }
-.story-chapter[hidden] { display: none; }
+.story-chapter { display: none; }
+.is-pinned .story-chapter { display: block; position: absolute; left: 0; top: 50%; width: 44%; margin-top: -110px; z-index: 2; pointer-events: auto; }
 .story-chapter { position: absolute; left: 0; top: 50%; width: 40%; margin-top: -110px; z-index: 2; }
 .story-chapter h2 { font-size: clamp(2.5rem, 4.2vw, 3.8rem); line-height: 1.16; font-weight: 500; letter-spacing: -.065em; margin: 20px 0 24px; }
 .story-chapter > p:last-child { max-width: 330px; font-size: .8125rem; line-height: 1.9; color: var(--color-muted); }
