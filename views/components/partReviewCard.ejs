@@ -1,6 +1,6 @@
 <article class="review-card">
     <div class="review-card__meta">
-        <%- include('badge', { label: review.type, tone: 'accent' }) %>
+        <%- include('badge', { label: review.type, tone: review.type === 'Orijinal' ? 'accent' : 'success' }) %>
         <span class="review-score" aria-label="Örnek puan: <%= review.score %> / 5"><span aria-hidden="true">★</span> <%= review.score %><small> / 5</small></span>
     </div>
     <h3><%= review.part %></h3>
@@ -8,5 +8,10 @@
     <dl class="review-facts">
         <div><dt>Artıları</dt><dd><%= review.pros %></dd></div>
         <div><dt>Dikkat edilmesi gerekenler</dt><dd><%= review.cons %></dd></div>
+        <div><dt>Marka / tedarik</dt><dd><%= review.supplier %></dd></div>
+        <div><dt>Örnek fiyat aralığı</dt><dd><%= review.priceRange %></dd></div>
+        <div><dt>Garanti bilgisi</dt><dd><%= review.warranty %></dd></div>
+        <div><dt>Uyumluluk notu</dt><dd><%= review.fitmentNote %></dd></div>
     </dl>
+    <p class="review-card__demo">Örnek veri · kullanıcı puanı değildir</p>
 </article>

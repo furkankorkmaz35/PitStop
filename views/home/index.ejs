@@ -2,39 +2,65 @@
 <div class="home-scroll-story" data-scroll-story>
 <section class="home-intro" aria-labelledby="home-title">
     <div class="home-intro__copy">
-        <p class="eyebrow">OTOMOBİLİN ÖTESİNDE / PITSTOP</p>
+        <p class="eyebrow">OTOMOBİLİ MERAK EDENLERE</p>
         <h1 id="home-title"><span class="home-title-line"><span>Kaputun altında</span></span><span class="home-title-line"><span><em>bir hikâye var.</em></span></span></h1>
-        <p class="home-lead">Otomobili yalnızca sürme. Nasıl çalıştığını, neye ihtiyaç duyduğunu ve hangi parçanın neden önemli olduğunu keşfet.</p>
+        <p class="home-lead">Aracını tanı. Bakımını anla. Doğru parçayı seç.</p>
         <div class="home-actions">
             <%- include('../components/linkButton', { href: '/Vehicle/Catalog', label: 'Araçları keşfet' }) %>
-            <%- include('../components/linkButton', { href: '#pitstop-nedir', label: 'Hikâyemiz', variant: 'secondary' }) %>
+            <%- include('../components/linkButton', { href: '#pitstop-nedir', label: 'PitStop nedir?', variant: 'secondary' }) %>
         </div>
     </div>
     <div class="story-chapter" data-story-chapter="1" hidden>
         <p class="eyebrow">01 / DETAYLARA YAKLAŞ</p>
         <h2>Gördüğünden<br>fazlasını tanı.</h2>
-        <p>Motor özellikleri, model notları, küçük ama önemli ayrıntılar.</p>
+        <p>Motor. Teknik özellikler. Model notları.</p>
     </div>
     <div class="story-chapter" data-story-chapter="2" hidden>
         <p class="eyebrow">02 / YOLA HAZIRLAN</p>
         <h2>İyi bakım.<br>Uzun hikâye.</h2>
-        <p>Bakım, parça ve servis bilgileri. Hepsi aynı yolculuğun parçası.</p>
+        <p>Bakım, parça ve servis.</p>
     </div>
     <%- include('../components/carStage') %>
-    <div class="story-wipe" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><div class="story-wipe__title"><p>YOLCULUK BURADA BAŞLIYOR</p><strong>Önce tanı.<br>Sonra yola çık.</strong></div></div>
+    <div class="story-wipe" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><div class="story-wipe__title"><strong>Önce tanı.<br>Sonra yola çık.</strong></div></div>
+    <a class="home-scroll-cue" href="#pitstop-nedir"><span aria-hidden="true">↓</span> Keşfe devam et</a>
     <div class="story-progress" aria-hidden="true"><span></span></div>
 </section>
 </div>
 <section class="home-about" id="pitstop-nedir" aria-labelledby="about-title">
-    <div><p class="eyebrow">PITSTOP NEDİR?</p><h2 id="about-title">Daha çok bilgi.<br />Daha bilinçli kararlar.</h2></div>
-    <div><p>Bir otomobili tanımak, marka ve modelini bilmekten fazlası. Motor özellikleri, dikkat edilmesi gereken noktalar, bakım işlemleri ve parça tercihleri de bu hikâyenin parçası.</p><p>PitStop bu bilgileri anlaşılır bir rehberde bir araya getirir. İster kendi aracını daha iyi tanımak iste, ister başka bir modeli araştır.</p><a class="arrow" href="/Home/About">Proje hakkında daha fazlası ↗</a></div>
+    <div class="home-about__heading"><p class="eyebrow">PITSTOP NEDİR?</p><h2 id="about-title"><span class="motion-line"><span>Aracına dair.</span></span><span class="motion-line"><span>Tek bir yerde.</span></span></h2></div>
+    <div class="home-about__summary"><p>Model özelliklerini incele, bakım konularını keşfet, parça seçeneklerini karşılaştır.</p><a class="editorial-link" href="/Home/About">PitStop hakkında <span aria-hidden="true">↗</span></a></div>
+    <div class="home-about__rail" aria-hidden="true"><span>ARAŞTIR</span><i></i><span>ANLA</span><i></i><span>YOLA ÇIK</span></div>
+</section>
+<section class="home-selection section" aria-labelledby="selection-title">
+    <div class="section-head"><div><p class="eyebrow">01 / ARAÇ KATALOĞU</p><h2 id="selection-title">Yakından tanı.</h2></div><a class="editorial-link" href="/Vehicle/Catalog">Tüm araçlar <span aria-hidden="true">↗</span></a></div>
+    <div class="home-selection__grid">
+        <% featuredVehicles.forEach((vehicle, index) => { %>
+        <a class="home-model" href="/Vehicle/Detail?brand=<%= encodeURIComponent(vehicle.brand) %>&amp;model=<%= encodeURIComponent(vehicle.model) %>" aria-label="<%= vehicle.brand %> <%= vehicle.model %> detaylarını incele">
+            <div class="home-model__top"><span><%= vehicle.brand %></span><span><%= vehicle.year %></span></div>
+            <div class="home-model__visual" aria-hidden="true"><span class="home-model__number">0<%= index + 1 %></span><span class="home-model__name"><%= vehicle.model %></span><span class="home-model__rule"></span></div>
+            <div class="home-model__bottom"><div><h3><%= vehicle.brand %> <%= vehicle.model %></h3><p><%= vehicle.engine %> · <%= vehicle.power %> bg · <%= vehicle.fuel %></p></div><span class="home-model__arrow" aria-hidden="true">↗</span></div>
+        </a>
+        <% }) %>
+    </div>
+    <p class="muted home-selection__note">Örnek araç verileri</p>
+</section>
+<section class="home-workshop section" aria-labelledby="workshop-title">
+    <div class="home-workshop__intro"><p class="eyebrow">02 / BAKIM REHBERİ</p><h2 id="workshop-title"><span class="motion-line"><span>Küçük kontroller.</span></span><span class="motion-line"><span>Büyük fark.</span></span></h2><a class="editorial-link" href="/Maintenance/Guide">Rehbere git <span aria-hidden="true">↗</span></a></div>
+    <div class="home-workshop__list">
+        <% featuredGuides.forEach((guide, index) => { %>
+        <div class="home-guide"><span class="home-guide__index">0<%= index + 1 %></span><div><h3><%= guide.title %></h3><p><%= guide.difficulty %> <span aria-hidden="true">/</span> <%= guide.duration %></p></div></div>
+        <% }) %>
+    </div>
 </section>
 <section class="home-directory section" aria-labelledby="features-title">
-    <div class="section-head"><p class="eyebrow">KEŞİF DİZİNİ / 01—04</p><h2 id="features-title">Nereden başlayalım?</h2></div>
-    <a class="directory-row" href="/Vehicle/Catalog"><span>01</span><h3>Araç atlası</h3><p>Motor, teknik özellikler ve model notları.</p><span aria-hidden="true">↗</span></a>
-    <a class="directory-row" href="/Maintenance/Logs"><span>02</span><h3>Bakım defteri</h3><p>Yapılan işlemler, kullanılan parçalar, maliyetler.</p><span aria-hidden="true">↗</span></a>
-    <a class="directory-row" href="/Review/PartReviews"><span>03</span><h3>Parça meselesi</h3><p>Seçeneklerin artıları ve dikkat edilecek noktalar.</p><span aria-hidden="true">↗</span></a>
-    <a class="directory-row" href="/Review/GarageFinder"><span>04</span><h3>Servis rehberi</h3><p>Şehre ve uzmanlık alanına göre keşif.</p><span aria-hidden="true">↗</span></a>
+    <div class="section-head"><p class="eyebrow">03 / DİĞER DURAKLAR</p><h2 id="features-title">İşin detayına gir.</h2></div>
+    <a class="directory-row" href="/Maintenance/Logs"><span>01</span><h3>Bakım defteri</h3><p>İşlemler ve maliyetler</p><span aria-hidden="true">↗</span></a>
+    <a class="directory-row" href="/Review/PartReviews"><span>02</span><h3>Parça rehberi</h3><p>Uyum ve karşılaştırma</p><span aria-hidden="true">↗</span></a>
+    <a class="directory-row" href="/Review/GarageFinder"><span>03</span><h3>Servis rehberi</h3><p>Şehir ve uzmanlık</p><span aria-hidden="true">↗</span></a>
 </section>
-<p class="home-disclosure">PitStop bir eğitim projesidir. Araç, bakım, parça ve servis içerikleri örnek verilerden oluşur.</p>
+<section class="home-finish" aria-labelledby="finish-title">
+    <p class="eyebrow">SIRADAKİ DURAK SENİN</p>
+    <a class="home-finish__link" href="/Vehicle/Catalog"><h2 id="finish-title">Aracını keşfet.</h2><span class="home-finish__arrow" aria-hidden="true">↗</span></a>
+    <div class="home-finish__meta"><p class="home-disclosure">Eğitim projesi. Araç ve rehber içerikleri örnek veridir.</p><a class="home-top-link" href="#main-content">Başa dön <span aria-hidden="true">↑</span></a></div>
+</section>
 <%- include('../partials/footer') %>

@@ -2,19 +2,21 @@
 <section class="review-heading" aria-labelledby="garages-title">
     <p class="eyebrow">USTA VE SERVİS REHBERİ</p>
     <h1 id="garages-title">Aracını bilen<br>servisi keşfet.</h1>
-    <p>Şehre göre örnek servisleri bul; uzmanlık alanlarını ve ilgilendikleri markaları karşılaştır.</p>
+    <p>Şehir, marka ve uzmanlık alanına göre örnek servis kayıtlarını karşılaştır. Hizmet kapsamı, çalışma saatleri ve temsili fiyat seviyesini incele.</p>
 </section>
-<form action="/Review/GarageFinder" method="get" class="review-filter" role="search" aria-label="Şehre göre servis ara">
-    <%- include('../components/field', { id: 'city', name: 'city', label: 'Şehir', placeholder: 'Örn. İstanbul', value: city }) %>
+<form action="/Review/GarageFinder" method="get" class="review-filter garage-filter" role="search" aria-label="Servis ara">
+    <%- include('../components/field', { id: 'city', name: 'city', label: 'Şehir', placeholder: 'Örn. İstanbul', value: filters.city }) %>
+    <%- include('../components/field', { id: 'brand', name: 'brand', label: 'Araç markası', placeholder: 'Örn. Toyota', value: filters.brand }) %>
+    <%- include('../components/field', { id: 'specialty', name: 'specialty', label: 'Uzmanlık / hizmet', placeholder: 'Örn. klima, dizel, fren', value: filters.specialty }) %>
     <%- include('../components/button', { label: 'Servis ara', buttonType: 'submit' }) %>
-    <% if (hasFilter) { %><%- include('../components/linkButton', { href: '/Review/GarageFinder', label: 'Filtreyi temizle', variant: 'secondary' }) %><% } %>
+    <% if (hasFilter) { %><%- include('../components/linkButton', { href: '/Review/GarageFinder', label: 'Temizle', variant: 'secondary' }) %><% } %>
 </form>
 <section class="section" aria-labelledby="results-title">
     <div class="section-head">
-        <div><p class="eyebrow">ÖRNEK LİSTE</p><h2 id="results-title">Servis rehberi</h2></div>
+        <div><p class="eyebrow"><%= hasFilter ? 'ARAMA SONUÇLARI' : 'ÖRNEK LİSTE' %></p><h2 id="results-title">Servis rehberi</h2></div>
         <span class="count"><%= garages.length %> servis</span>
     </div>
-    <% if (hasFilter) { %><p class="muted">Şehir araması: <strong><%= city %></strong></p><% } %>
+    <% if (hasFilter) { %><p class="muted">Filtre: <%= [filters.city, filters.brand, filters.specialty].filter(Boolean).join(' · ') %></p><% } %>
     <% if (garages.length) { %>
         <div class="review-grid">
             <% garages.forEach(garage => { %><%- include('../components/garageCard', { garage }) %><% }) %>
@@ -22,11 +24,11 @@
     <% } else { %>
         <div class="review-empty">
             <p class="eyebrow">SONUÇ BULUNAMADI</p>
-            <h3>Başka bir şehir deneyebilirsin.</h3>
-            <p>Bu aramayla eşleşen örnek servis bulunmuyor. Filtreyi temizleyerek tüm listeye dönebilirsin.</p>
+            <h3>Filtreleri değiştirip yeniden deneyebilirsin.</h3>
+            <p>Şehir, marka ve hizmet alanıyla eşleşen örnek servis bulamadık.</p>
             <%- include('../components/linkButton', { href: '/Review/GarageFinder', label: 'Tüm servisleri göster', variant: 'secondary' }) %>
         </div>
     <% } %>
-    <p class="muted">İşletmeler ve puanlar temsili veridir; gerçek servis önerisi değildir. İletişim ve randevu özelliği henüz bulunmuyor.</p>
+    <p class="muted">İşletmeler, adresler, saatler, puanlar ve fiyat seviyeleri temsili veridir; gerçek servis önerisi veya doğrulanmış iletişim bilgisi değildir.</p>
 </section>
 <%- include('../partials/footer') %>

@@ -171,3 +171,32 @@ Başlık satırları maskeden açılır; sticky sahnede metin, kamera yaklaşım
 Son aşamada beş şerit açık renkli bilgi bölümüne geçişi hazırlar.
 Parlak platform kaldırıldı; araç gerçek zamanlı gölge alan bir zemine oturur.
 Sahne kodu `setProgress` arayüzü sunar; controller/model/route katmanları değişmedi.
+
+## Ortak gezinme
+
+`frontend/site.js` tüm sayfalarda küçük bir menü modülü yükler; GSAP/Three.js
+ortak pakete dahil değildir. Mobil menü bir disclosure bileşenidir: aria-expanded,
+Escape ile kapatma, odak dışarı çıktığında kapatma ve sayfaya geri dönüşte sıfırlama.
+JavaScript olmadığında bağlantılar görünür kalır. Aktif yol sunucuda res.locals
+üzerinden header'a iletilir; araç detayında katalog bağlamı işaretlenir.
+Destekleyen tarayıcılarda CSS cross-document view transition 160–240ms sürer;
+reduced motion tercihinde etkinleşmez. Navigation yönlendirmesi ele geçirilmez.
+Kaynak: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/%40view-transition
+Doğrulama: 13 HTTP testi; 390px menü aç/kapat, Escape, katalog gezinmesi,
+aktif sayfa eşleşmesi ve yatay taşma kontrolü.
+
+## Ana sayfa içerik ve alt bölüm ritmi
+
+Tanıtım tek cümleye, keşif satırlarının açıklamaları kısa konu etiketlerine
+indirildi. Açılışla aynı maskeli satır animasyonu tanıtım başlığında kullanılır.
+Tanıtımın çizgileri ve keşif satırları ScrollTrigger ile bir kez açılır;
+bağlantı zeminleri hover ve klavye odağında aynı hareketi paylaşır.
+Reduced-motion durumunda tüm içerik doğrudan görünür. Dört keşif bağlantısı,
+örnek veri açıklaması ve MVC akışı korunur.
+
+## Ana sayfa yayın adayı temizliği
+
+home.css tek bir bileşen düzenine toplandı. Mobil animasyon eşleşmesi, hash
+başlangıç konumu ve sahne kaynak temizliği düzeltildi. İçerik akışı ve bölüm
+numaraları sadeleştirildi; kapanış ve başa dönüş eklendi. Son kontrol kapsamı
+ve gerçek cihaz/hosting sınırları `docs/home-release-checks.md` dosyasındadır.

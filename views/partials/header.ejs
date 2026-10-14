@@ -4,20 +4,39 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title><%= title %> · PitStop</title>
+    <% if (typeof description === 'string') { %>
+    <meta name="description" content="<%= description %>" />
+    <meta property="og:title" content="<%= title %> · PitStop" />
+    <meta property="og:description" content="<%= description %>" />
+    <meta property="og:type" content="website" />
+    <% } %>
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+    <meta name="theme-color" content="#111315" />
     <link rel="stylesheet" href="/css/site.css" />
+    <script type="module" src="/build/site.js"></script>
 </head>
 <body>
     <a class="skip-link" href="#main-content">İçeriğe geç</a>
     <header class="top">
         <a class="brand" href="/">PITSTOP<span>.</span></a>
 
-        <nav aria-label="Ana menü">
-            <a href="/">Ana Sayfa</a>
-            <a href="/Vehicle/Catalog">Araç Kataloğu</a>
-            <a href="/Maintenance/Logs">Bakım Kayıtları</a>
-            <a href="/Maintenance/Guide">DIY Rehber</a>
-            <a href="/Review/PartReviews">Parça İnceleme</a>
-            <a href="/Review/GarageFinder">Servis Bul</a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" hidden>
+            <span data-menu-label>Menü</span><span class="menu-toggle__icon" aria-hidden="true"><i></i><i></i></span>
+        </button>
+        <nav id="primary-nav" aria-label="Ana menü">
+            <% const path = typeof currentPath === 'string' ? currentPath : '/';
+               const links = [
+                 { href: '/', label: 'Ana Sayfa', active: ['/', '/home', '/home/index'].includes(path) },
+                 { href: '/Vehicle/Catalog', label: 'Araç Kataloğu', active: path.startsWith('/vehicle'), parent: path === '/vehicle/detail' },
+                 { href: '/Maintenance/Logs', label: 'Bakım Kayıtları', active: ['/maintenance', '/maintenance/logs'].includes(path) },
+                 { href: '/Maintenance/Guide', label: 'DIY Rehber', active: path === '/maintenance/guide' },
+                 { href: '/Review/PartReviews', label: 'Parça İnceleme', active: ['/review', '/review/partreviews'].includes(path) },
+                 { href: '/Review/GarageFinder', label: 'Servis Bul', active: path === '/review/garagefinder' },
+                 { href: '/Account/Login', label: currentUser ? 'Hesabım' : 'Giriş Yap', active: path === '/account/login' }
+               ]; %>
+            <% links.forEach((link, index) => { %>
+                <a href="<%= link.href %>" <% if (link.active) { %>aria-current="<%= link.parent ? 'true' : 'page' %>"<% } %>><span class="nav-index" aria-hidden="true">0<%= index + 1 %></span><span><%= link.label %></span><span class="nav-arrow" aria-hidden="true">↗</span></a>
+            <% }) %>
         </nav>
     </header>
 

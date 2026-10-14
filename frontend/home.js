@@ -2,10 +2,15 @@ import { mountHomeMotion } from './motion/home-motion.js';
 
 let scene;
 let progress = 0;
-const cleanupMotion = mountHomeMotion(value => {
-  progress = value;
-  scene?.setProgress(value);
-});
+let cleanupMotion;
+try {
+  cleanupMotion = mountHomeMotion(value => {
+    progress = value;
+    scene?.setProgress(value);
+  });
+} catch (error) {
+  console.warn('Sayfa animasyonu başlatılamadı:', error);
+}
 const stage = document.querySelector('[data-car-stage]');
 if (stage) {
   const status = stage.querySelector('[data-car-status]');
