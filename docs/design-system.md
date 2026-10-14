@@ -160,3 +160,14 @@ ana sahne 260vh anlatı boyunca CSS sticky ile sabitlenir. Doğal scroll ilerlem
 metin geçişlerini, hafif sahne büyümesini ve ilerleme çizgisini yönetir.
 Scroll engellenmez; GSAP bağımlılığı eklenmeden aynı pin/scrub yaklaşımı kullanılır.
 Mobilde ve JavaScript olmadan normal sayfa akışı korunur.
+
+## GSAP / Lenis stüdyo akışı
+
+`frontend/motion/home-motion.js` sunum katmanındaki animasyonları yönetir.
+GSAP matchMedia, masaüstü ve reduced-motion durumlarına göre timeline'ları
+kurar/temizler. Lenis yalnızca uygun masaüstü görünümünde GSAP ticker'a bağlanır.
+Başlık satırları maskeden açılır; sticky sahnede metin, kamera yaklaşımı ve
+ışık aynı ilerleme değerini kullanır. Araç bağımsız yavaş otomatik dönüşünü sürdürür.
+Son aşamada beş şerit açık renkli bilgi bölümüne geçişi hazırlar.
+Parlak platform kaldırıldı; araç gerçek zamanlı gölge alan bir zemine oturur.
+Sahne kodu `setProgress` arayüzü sunar; controller/model/route katmanları değişmedi.
