@@ -14,10 +14,26 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(directory, 'views'));
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(directory, 'public')));
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
+app.use(express.static(path.join(directory, 'public'), {
+  etag: false,
+  lastModified: false,
+  maxAge: 0,
+  setHeaders: (res) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
+}));
 app.use(attachDemoUser);
 app.use((req, res, next) => {
   res.locals.currentPath = req.path.toLowerCase().replace(/\/$/, '') || '/';
+  res.locals.assetVersion = Date.now();
   next();
 });
 app.use('/', homeRoutes);
