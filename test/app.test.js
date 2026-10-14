@@ -28,8 +28,8 @@ test('six existing pages render their content and shared layout', async () => {
   const pages = [
     ['/Vehicle/Catalog', 'Toyota Corolla'],
     ['/Vehicle/Detail', '1.6 Valvematic'],
-    ['/Maintenance/Logs', 'Toplam ₺10.750'],
-    ['/Maintenance/Guide', 'Hava filtresi kontrolü'],
+    ['/Maintenance/Logs', 'Toplam ₺23.900'],
+    ['/Maintenance/Guide', 'Hava filtresini gözle kontrol et'],
     ['/Review/PartReviews', 'Ön fren balatası'],
     ['/Review/GarageFinder', 'Anadolu Oto Servis']
   ];
@@ -54,13 +54,13 @@ test('brand and engine filters combine and ignore letter case', async () => {
   assert.match(html, /Volkswagen Golf/);
   assert.doesNotMatch(html, /Toyota Corolla/);
   assert.match(await page('/Vehicle/Catalog?brand=Toyota&engine=TDI'), /0 araç/);
-  assert.match(await page('/Vehicle/Catalog?brand=%20%20'), /4 araç/);
+  assert.match(await page('/Vehicle/Catalog?brand=%20%20'), /14 araç/);
 });
 
 test('catalog detail links open the selected vehicle', async () => {
   const html = await page('/Vehicle/Catalog');
   const links = [...html.matchAll(/href="(\/Vehicle\/Detail\?[^\"]+)"/g)];
-  assert.equal(links.length, 4);
+  assert.equal(links.length, 14);
   for (const [, escapedLink] of links) {
     const link = escapedLink.replaceAll('&amp;', '&');
     const query = new URL(link, baseUrl).searchParams;
@@ -145,7 +145,7 @@ test('vehicle detail shows selected specifications and honest resource links', a
 test('garage search handles Turkish casing, whitespace and escaped filter values', async () => {
   const html = await page('/Review/GarageFinder?city=' + encodeURIComponent(' istanbul '));
   assert.match(html, /Usta Garaj/);
-  assert.match(html, /1 servis/);
+  assert.match(html, /2 servis/);
   assert.match(html, /value=" istanbul "/);
   assert.doesNotMatch(html, /Anadolu Oto Servis|Ege Motor/);
   assert.match(await page('/Review/GarageFinder?city=' + encodeURIComponent('İZMİR')), /Ege Motor/);
@@ -175,7 +175,7 @@ test('home has discoverable previews, metadata and working internal destinations
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
   assert.match(html, /Toyota Corolla/);
   assert.match(html, /Volkswagen Golf/);
-  assert.match(html, /Hava filtresi kontrolü/);
+  assert.match(html, /Hava filtresini gözle kontrol et/);
   assert.doesNotMatch(html, /sketchfab\.com|creativecommons\.org/);
   const destinations = new Set([...html.matchAll(/href="(\/[^"#]*)"/g)].map(match => match[1].replaceAll('&amp;', '&')));
   for (const destination of destinations) assert.equal((await fetch(baseUrl + destination)).status, 200, destination);
