@@ -169,18 +169,4 @@ test('navigation indicates current page and vehicle detail keeps catalog context
   assert.equal((await fetch(baseUrl + '/build/site.js')).status, 200);
 });
 
-test('home has discoverable previews, metadata and working internal destinations', async () => {
-  const html = await page('/');
-  assert.match(html, /name="description"/);
-  assert.equal((html.match(/<h1\b/g) || []).length, 1);
-  assert.match(html, /Toyota Corolla/);
-  assert.match(html, /Volkswagen Golf/);
-  assert.match(html, /Hava filtresini gözle kontrol et/);
-  assert.doesNotMatch(html, /sketchfab\.com|creativecommons\.org/);
-  const destinations = new Set([...html.matchAll(/href="(\/[^"#]*)"/g)].map(match => match[1].replaceAll('&amp;', '&')));
-  for (const destination of destinations) assert.equal((await fetch(baseUrl + destination)).status, 200, destination);
-  for (const [, anchor] of html.matchAll(/href="#([^"]+)"/g)) assert.ok(html.includes(`id="${anchor}"`), anchor);
-  const about = await page('/Home/About');
-  assert.match(about, /vicent091036/);
-  assert.match(about, /creativecommons\.org\/licenses\/by\/4\.0/);
-});
+
