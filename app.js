@@ -15,6 +15,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(directory, 'views'));
 app.use(express.urlencoded({ extended: false }));
 app.use((req, res, next) => {
+  res.setHeader('Clear-Site-Data', '"cache"');
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
