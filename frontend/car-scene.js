@@ -31,7 +31,7 @@ export async function mountCarScene(stage) {
   draco.setWorkerLimit(1);
   const loader = new GLTFLoader().setDRACOLoader(draco);
   let frame = 0, lastTime = 0, visible = false, disposed = false;
-  let paused = reducedMotion.matches;
+  let paused = false;
   let targetRotation = -.3;
   let model, resizeObserver, visibilityObserver;
   let timeout;
@@ -108,7 +108,7 @@ export async function mountCarScene(stage) {
     function tick(time) {
       frame = 0;
       if (disposed || !visible || document.hidden) return;
-      if (!paused) targetRotation += Math.min((time - (lastTime || time)) / 1000, .05) * .1;
+      if (!paused) targetRotation += Math.min((time - (lastTime || time)) / 1000, .05) * .35;
       model.rotation.y += (targetRotation - model.rotation.y) * .12;
       if (Math.abs(targetRotation - model.rotation.y) < .001) model.rotation.y = targetRotation;
       lastTime = time;
@@ -124,7 +124,31 @@ export async function mountCarScene(stage) {
     resizeObserver.observe(viewport);
     visibilityObserver = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; sync(); });
     visibilityObserver.observe(stage);
-    reducedMotion.addEventListener('change', () => { paused = reducedMotion.matches; sync(); }, {signal: events.signal});
+    
+    let isDragging = false, lastPointerX = 0;
+    viewport.style.cursor = 'grab';
+    viewport.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      lastPointerX = e.clientX;
+      viewport.style.cursor = 'grabbing';
+      if (viewport.setPointerCapture) viewport.setPointerCapture(e.pointerId);
+    }, { signal: events.signal });
+    viewport.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const deltaX = e.clientX - lastPointerX;
+      lastPointerX = e.clientX;
+      targetRotation += deltaX * 0.008;
+      sync();
+    }, { signal: events.signal });
+    const endDrag = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      viewport.style.cursor = 'grab';
+    };
+    viewport.addEventListener('pointerup', endDrag, { signal: events.signal });
+    viewport.addEventListener('pointercancel', endDrag, { signal: events.signal });
+    reducedMotion.addEventListener('change', () => { sync(); }, { signal: events.signal });
+
     document.addEventListener('visibilitychange', sync, {signal: events.signal});
     window.addEventListener('pagehide', dispose, {once: true, signal: events.signal});
     window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
