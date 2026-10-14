@@ -52,8 +52,8 @@
 /* Editorial home: open studio, quiet typography, indexed navigation. */
 .home-intro { position: relative; grid-template-columns: .85fr 1.15fr; gap: 0; min-height: 650px; padding: 40px 0 64px; }
 .home-intro__copy { position: relative; z-index: 2; }
-.home-intro h1 { font-weight: 500; font-size: clamp(2.5rem, 4.2vw, 3.8rem); line-height: 1.16; letter-spacing: -.065em; }
-.home-intro em { color: var(--color-muted); }
+.home-intro h1 { font-weight: 500; font-size: clamp(2.5rem, 4.2vw, 3.8rem); line-height: 1.16; letter-spacing: -.065em; margin: 20px 0 24px; color: #ffffff; }
+.home-intro em { color: var(--color-accent); font-style: normal; display: inline-block; }
 .home-intro .eyebrow { font-size: .625rem; letter-spacing: .16em; }
 .home-lead { max-width: 360px; font-size: .8125rem; line-height: 1.9; }
 .home-actions { gap: 20px; }

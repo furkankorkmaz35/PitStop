@@ -29,8 +29,7 @@ export function mountHomeMotion(setSceneProgress) {
     gsap.ticker.lagSmoothing(0);
 
     const entrance = gsap.timeline({ defaults: { ease: 'power3.out' } });
-    entrance.from('.home-title-line > span', { yPercent: 110, duration: 1.05, stagger: .14 })
-      .from('.home-intro .eyebrow, .home-lead, .home-actions', { opacity: 0, y: 12, duration: .65, stagger: .1 }, .25);
+    entrance.from('#home-title, .home-intro .eyebrow, .home-lead, .home-actions', { opacity: 0, y: 16, duration: 0.8, stagger: 0.08, ease: 'power3.out' });
 
     story.classList.add('is-pinned', 'has-motion');
     gsap.set(chapters, { autoAlpha: 0, y: 30 });
