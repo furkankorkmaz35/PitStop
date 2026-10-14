@@ -46,6 +46,18 @@ export async function mountCarScene(stage) {
   let model, resizeObserver, visibilityObserver;
   let timeout;
 
+  function releaseObject(root) {
+    const materials = new Set(), textures = new Set();
+    root.traverse(object => {
+      object.geometry?.dispose();
+      for (const material of [object.material].flat().filter(Boolean)) {
+        materials.add(material);
+        for (const value of Object.values(material)) if (value?.isTexture) textures.add(value);
+      }
+    });
+    materials.forEach(material => material.dispose());
+    textures.forEach(texture => texture.dispose());
+  }
   function dispose() {
     if (disposed) return;
     disposed = true;
@@ -55,17 +67,7 @@ export async function mountCarScene(stage) {
     resizeObserver?.disconnect();
     visibilityObserver?.disconnect();
     draco.dispose();
-    const textures = new Set();
-    const materials = new Set();
-    scene.traverse(object => {
-      object.geometry?.dispose();
-      if (object.material) for (const material of [object.material].flat()) {
-        materials.add(material);
-        for (const value of Object.values(material)) if (value?.isTexture) textures.add(value);
-      }
-    });
-    materials.forEach(material => material.dispose());
-    textures.forEach(texture => texture.dispose());
+    releaseObject(scene);
     environment.dispose();
     renderer.dispose();
     renderer.domElement.remove();
@@ -77,7 +79,10 @@ export async function mountCarScene(stage) {
   }
   try {
     const gltf = await Promise.race([
-      loader.loadAsync('/models/ferrari.glb'),
+      loader.loadAsync('/models/ferrari.glb').then(result => {
+        if (disposed) { releaseObject(result.scene); throw new Error('Scene disposed'); }
+        return result;
+      }),
       new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error('Model load timeout')), 20000); })
     ]);
     clearTimeout(timeout);
@@ -144,14 +149,18 @@ export async function mountCarScene(stage) {
     resizeObserver.observe(viewport);
     visibilityObserver = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; sync(); });
     visibilityObserver.observe(stage);
-    reducedMotion.addEventListener('change', () => { paused = reducedMotion.matches; sync(); }, {signal: events.signal});
+    reducedMotion.addEventListener('change', () => {
+      paused = reducedMotion.matches;
+      if (paused) { targetRotation = model.rotation.y; sceneProgress = 0; render(); }
+      sync();
+    }, {signal: events.signal});
     document.addEventListener('visibilitychange', sync, {signal: events.signal});
     window.addEventListener('pagehide', dispose, {once: true, signal: events.signal});
     window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
     renderer.domElement.addEventListener('webglcontextlost', event => { event.preventDefault(); fallback(); }, {signal: events.signal});
     resize(); sync();
     stage.dataset.state = 'ready';
-    status.textContent = 'Ferrari 458 Italia / Stüdyo görünümü';
+    status.textContent = '3D araç görünümü hazır.';
     draco.dispose();
     return { setProgress(value) {
       sceneProgress = reducedMotion.matches ? 0 : Math.max(0, Math.min(1, value));

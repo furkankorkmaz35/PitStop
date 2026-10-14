@@ -155,3 +155,32 @@ test('garage search handles Turkish casing, whitespace and escaped filter values
   assert.match(empty, /Tüm servisleri göster/);
   assert.doesNotMatch(empty, /<script>/);
 });
+
+test('navigation indicates current page and vehicle detail keeps catalog context', async () => {
+  for (const [path, href] of [
+    ['/', '/'], ['/vehicle/catalog/?brand=Toyota', '/Vehicle/Catalog'],
+    ['/Maintenance/Logs', '/Maintenance/Logs'], ['/Review/GarageFinder?city=ankara', '/Review/GarageFinder']
+  ]) {
+    const html = await page(path);
+    assert.ok(html.includes(`href="${href}" aria-current="page"`));
+    assert.equal((html.match(/aria-current="page"/g) || []).length, 1);
+  }
+  assert.ok((await page('/Vehicle/Detail')).includes('href="/Vehicle/Catalog" aria-current="true"'));
+  assert.equal((await fetch(baseUrl + '/build/site.js')).status, 200);
+});
+
+test('home has discoverable previews, metadata and working internal destinations', async () => {
+  const html = await page('/');
+  assert.match(html, /name="description"/);
+  assert.equal((html.match(/<h1\b/g) || []).length, 1);
+  assert.match(html, /Toyota Corolla/);
+  assert.match(html, /Volkswagen Golf/);
+  assert.match(html, /Hava filtresi kontrolü/);
+  assert.doesNotMatch(html, /sketchfab\.com|creativecommons\.org/);
+  const destinations = new Set([...html.matchAll(/href="(\/[^"#]*)"/g)].map(match => match[1].replaceAll('&amp;', '&')));
+  for (const destination of destinations) assert.equal((await fetch(baseUrl + destination)).status, 200, destination);
+  for (const [, anchor] of html.matchAll(/href="#([^"]+)"/g)) assert.ok(html.includes(`id="${anchor}"`), anchor);
+  const about = await page('/Home/About');
+  assert.match(about, /vicent091036/);
+  assert.match(about, /creativecommons\.org\/licenses\/by\/4\.0/);
+});

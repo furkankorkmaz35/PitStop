@@ -12,6 +12,10 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(directory, 'views'));
 app.use(express.static(path.join(directory, 'public')));
+app.use((req, res, next) => {
+  res.locals.currentPath = req.path.toLowerCase().replace(/\/$/, '') || '/';
+  next();
+});
 app.use('/', homeRoutes);
 app.use('/', vehicleRoutes);
 app.use('/Maintenance', maintenanceRoutes);
