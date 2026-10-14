@@ -1,63 +1,40 @@
 <%- include('../partials/header') %>
+<div class="home-scroll-story" data-scroll-story>
 <section class="home-intro" aria-labelledby="home-title">
     <div class="home-intro__copy">
-        <p class="eyebrow">ARACINLA İLGİLİ BİR SONRAKİ ADIM</p>
-        <h1 id="home-title">Aracını tanı.<br /><em>Yola güvenle<br />devam et.</em></h1>
-        <p class="home-lead">Teknik bilgilerden bakım maliyetlerine, parça seçeneklerinden servis önerilerine. PitStop, aracını daha iyi anlaman için bir başlangıç noktası.</p>
+        <p class="eyebrow">OTOMOBİLİN ÖTESİNDE / PITSTOP</p>
+        <h1 id="home-title"><span class="home-title-line"><span>Kaputun altında</span></span><span class="home-title-line"><span><em>bir hikâye var.</em></span></span></h1>
+        <p class="home-lead">Otomobili yalnızca sürme. Nasıl çalıştığını, neye ihtiyaç duyduğunu ve hangi parçanın neden önemli olduğunu keşfet.</p>
         <div class="home-actions">
             <%- include('../components/linkButton', { href: '/Vehicle/Catalog', label: 'Araçları keşfet' }) %>
-            <%- include('../components/linkButton', { href: '#pitstop-nedir', label: 'PitStop’u tanı', variant: 'secondary' }) %>
+            <%- include('../components/linkButton', { href: '#pitstop-nedir', label: 'Hikâyemiz', variant: 'secondary' }) %>
         </div>
+    </div>
+    <div class="story-chapter" data-story-chapter="1" hidden>
+        <p class="eyebrow">01 / DETAYLARA YAKLAŞ</p>
+        <h2>Gördüğünden<br>fazlasını tanı.</h2>
+        <p>Motor özellikleri, model notları, küçük ama önemli ayrıntılar.</p>
+    </div>
+    <div class="story-chapter" data-story-chapter="2" hidden>
+        <p class="eyebrow">02 / YOLA HAZIRLAN</p>
+        <h2>İyi bakım.<br>Uzun hikâye.</h2>
+        <p>Bakım, parça ve servis bilgileri. Hepsi aynı yolculuğun parçası.</p>
     </div>
     <%- include('../components/carStage') %>
+    <div class="story-wipe" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><div class="story-wipe__title"><p>YOLCULUK BURADA BAŞLIYOR</p><strong>Önce tanı.<br>Sonra yola çık.</strong></div></div>
+    <div class="story-progress" aria-hidden="true"><span></span></div>
 </section>
-
+</div>
 <section class="home-about" id="pitstop-nedir" aria-labelledby="about-title">
-    <div>
-        <p class="eyebrow">PITSTOP NEDİR?</p>
-        <h2 id="about-title">Daha çok bilgi.<br />Daha bilinçli kararlar.</h2>
-    </div>
-    <div>
-        <p>Bir otomobili tanımak, marka ve modelini bilmekten fazlası. Motor özellikleri, dikkat edilmesi gereken noktalar, bakım işlemleri ve parça tercihleri de bu hikâyenin parçası.</p>
-        <p>PitStop bu bilgileri anlaşılır bir rehberde bir araya getirir. İster kendi aracını daha iyi tanımak iste, ister başka bir modeli araştır.</p>
-        <a class="arrow" href="/Home/About">Proje hakkında daha fazlası ↗</a>
-    </div>
+    <div><p class="eyebrow">PITSTOP NEDİR?</p><h2 id="about-title">Daha çok bilgi.<br />Daha bilinçli kararlar.</h2></div>
+    <div><p>Bir otomobili tanımak, marka ve modelini bilmekten fazlası. Motor özellikleri, dikkat edilmesi gereken noktalar, bakım işlemleri ve parça tercihleri de bu hikâyenin parçası.</p><p>PitStop bu bilgileri anlaşılır bir rehberde bir araya getirir. İster kendi aracını daha iyi tanımak iste, ister başka bir modeli araştır.</p><a class="arrow" href="/Home/About">Proje hakkında daha fazlası ↗</a></div>
 </section>
-
-<section class="section" aria-labelledby="features-title">
-    <div class="section-head">
-        <div>
-            <p class="eyebrow">NELER KEŞFEDEBİLİRSİN?</p>
-            <h2 id="features-title">Aracına dört açıdan bak.</h2>
-        </div>
-        <span class="muted">Bilgiyi bul. Seçeneklerini anla.</span>
-    </div>
-    <div class="feature-grid">
-        <%- include('../components/featureCard', { number: '01', heading: 'Aracını tanı', description: 'Marka ve motor tipine göre araçları bul. Teknik özellikleri ve dikkat edilmesi gereken noktaları incele.', href: '/Vehicle/Catalog', label: 'Kataloğu incele' }) %>
-        <%- include('../components/featureCard', { number: '02', heading: 'Bakımı anla', description: 'Örnek bakım kayıtlarını, yapılan işlemleri ve maliyetleri gör. Temel bakım rehberlerini keşfet.', href: '/Maintenance/Logs', label: 'Bakım kayıtlarına bak' }) %>
-        <%- include('../components/featureCard', { number: '03', heading: 'Parçaları karşılaştır', description: 'Orijinal ve yan sanayi parça seçeneklerini artıları, eksileri ve araç uyumu açısından değerlendir.', href: '/Review/PartReviews', label: 'Parça incelemelerini aç' }) %>
-        <%- include('../components/featureCard', { number: '04', heading: 'Servisleri keşfet', description: 'Şehre göre örnek servis listesini filtrele. Servislerin uzmanlık alanlarını incele.', href: '/Review/GarageFinder', label: 'Servis rehberine git' }) %>
-    </div>
+<section class="home-directory section" aria-labelledby="features-title">
+    <div class="section-head"><p class="eyebrow">KEŞİF DİZİNİ / 01—04</p><h2 id="features-title">Nereden başlayalım?</h2></div>
+    <a class="directory-row" href="/Vehicle/Catalog"><span>01</span><h3>Araç atlası</h3><p>Motor, teknik özellikler ve model notları.</p><span aria-hidden="true">↗</span></a>
+    <a class="directory-row" href="/Maintenance/Logs"><span>02</span><h3>Bakım defteri</h3><p>Yapılan işlemler, kullanılan parçalar, maliyetler.</p><span aria-hidden="true">↗</span></a>
+    <a class="directory-row" href="/Review/PartReviews"><span>03</span><h3>Parça meselesi</h3><p>Seçeneklerin artıları ve dikkat edilecek noktalar.</p><span aria-hidden="true">↗</span></a>
+    <a class="directory-row" href="/Review/GarageFinder"><span>04</span><h3>Servis rehberi</h3><p>Şehre ve uzmanlık alanına göre keşif.</p><span aria-hidden="true">↗</span></a>
 </section>
-
-<section class="home-how section" aria-labelledby="how-title">
-    <p class="eyebrow">NASIL BAŞLARSIN?</p>
-    <h2 id="how-title">Üç adımda daha yakından tanı.</h2>
-    <ol class="step-list">
-        <li><span aria-hidden="true">01</span><h3>Aracını bul</h3><p>Katalogda marka veya motor tipiyle arama yap.</p></li>
-        <li><span aria-hidden="true">02</span><h3>Detaylara bak</h3><p>Teknik bilgileri ve modelle ilgili notları incele.</p></li>
-        <li><span aria-hidden="true">03</span><h3>Bilgini genişlet</h3><p>Bakım, parça ve servis rehberlerini keşfet.</p></li>
-    </ol>
-</section>
-
-<section class="home-cta section" aria-labelledby="cta-title">
-    <div>
-        <p class="eyebrow">İLK DURAK: KEŞİF</p>
-        <h2 id="cta-title">Aracının hikâyesini<br />daha iyi anla.</h2>
-        <p class="muted">Araç kataloğuyla başlayalım.</p>
-    </div>
-    <%- include('../components/linkButton', { href: '/Vehicle/Catalog', label: 'Kataloğa git' }) %>
-</section>
-
 <p class="home-disclosure">PitStop bir eğitim projesidir. Araç, bakım, parça ve servis içerikleri örnek verilerden oluşur.</p>
 <%- include('../partials/footer') %>

@@ -1,18 +1,28 @@
+import { mountHomeMotion } from './motion/home-motion.js';
+
+let scene;
+let progress = 0;
+const cleanupMotion = mountHomeMotion(value => {
+  progress = value;
+  scene?.setProgress(value);
+});
 const stage = document.querySelector('[data-car-stage]');
 if (stage) {
   const status = stage.querySelector('[data-car-status]');
   const observer = new IntersectionObserver(async entries => {
     if (!entries.some(entry => entry.isIntersecting)) return;
     observer.disconnect();
-    if (status) status.textContent = 'Araç görünümü yükleniyor…';
+    status.textContent = 'Araç görünümü yükleniyor…';
     try {
       const { mountCarScene } = await import('./car-scene.js');
-      await mountCarScene(stage);
+      scene = await mountCarScene(stage);
+      scene.setProgress(progress);
     } catch (error) {
       stage.dataset.state = 'fallback';
-      if (status) status.textContent = '3D görünüm açılamadı. Araç illüstrasyonu gösteriliyor.';
+      status.textContent = '3D görünüm açılamadı. Araç illüstrasyonu gösteriliyor.';
       console.warn('Araç sahnesi yüklenemedi:', error);
     }
   }, { rootMargin: '160px' });
   observer.observe(stage);
+  addEventListener('pagehide', () => { observer.disconnect(); cleanupMotion?.(); }, { once: true });
 }
