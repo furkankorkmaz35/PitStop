@@ -178,7 +178,7 @@ export async function mountCarScene(stage) {
     status.textContent = 'Ferrari 458 Italia / Stüdyo görünümü';
     draco.dispose();
     return { setProgress(value) {
-      sceneProgress = reducedMotion.matches ? 0 : Math.max(0, Math.min(1, value));
+      sceneProgress = Math.max(0, Math.min(1, value));
       if (visible && !document.hidden && paused) render();
     } };
   } catch (error) {
