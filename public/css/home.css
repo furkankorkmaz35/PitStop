@@ -121,3 +121,30 @@
 .is-pinned .vehicle-stage__viewport { max-height: 60vh; }
 .is-pinned .story-progress { display: block; position: absolute; bottom: 24px; left: 0; right: 0; height: 1px; background: var(--color-border); }
 .story-progress span { display: block; height: 100%; background: var(--color-accent); transform: scaleX(var(--story-progress, 0)); transform-origin: left; }
+
+/* Motion direction: one opening, one studio sequence, one surface hand-off. */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }
+.home-title-line { display: block; overflow: hidden; padding-bottom: .1em; margin-bottom: -.1em; }
+.home-title-line > span { display: block; }
+.home-intro__copy, .home-about, .directory-row { animation: none; }
+.home-scroll-story.is-pinned { height: 320vh; }
+.is-pinned.has-motion .vehicle-stage { transform: none; }
+.vehicle-stage { background: radial-gradient(ellipse at 50% 65%, #262a2c 0%, #17191b 38%, transparent 70%); }
+.vehicle-stage__watermark { color: #ffffff08; font-weight: 500; }
+.story-wipe { display: none; }
+.has-motion .story-wipe { display: flex; position: absolute; inset: 0 -28px; z-index: 4; pointer-events: none; }
+.story-wipe span { flex: 1; background: #dfded8; transform: scaleY(0); }
+.has-motion .story-progress { z-index: 5; }
+.home-about { position: relative; margin: 0 -28px; padding: 88px 48px; gap: 72px; border: 0; background: #dfded8; color: #202326; }
+.home-about .eyebrow { color: #a63d1c; }
+.home-about p:not(.eyebrow) { color: #50565a; }
+.home-about .arrow { color: #963717; }
+.home-about h2 { font-size: clamp(2rem, 3.7vw, 3rem); line-height: 1.18; }
+@media (max-width: 780px) {
+  .home-about { margin: 0 -16px; padding: 48px 24px; gap: 24px; }
+}
+.story-wipe__title { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #202326; text-align: center; padding: 32px; }
+.story-wipe__title p { font-size: .625rem; letter-spacing: .18em; color: #963717; margin-bottom: 24px; }
+.story-wipe__title strong { font-size: clamp(3rem, 6vw, 5rem); line-height: 1.12; font-weight: 500; letter-spacing: -.06em; }

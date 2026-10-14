@@ -12,7 +12,9 @@ export async function mountCarScene(stage) {
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = .85;
+  renderer.toneMappingExposure = .7;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.domElement.setAttribute('role', 'img');
   renderer.domElement.setAttribute('aria-label', 'Turuncu Ferrari 458 Italia üç boyutlu araç görünümü');
   const scene = new THREE.Scene();
@@ -21,11 +23,18 @@ export async function mountCarScene(stage) {
   const room = new RoomEnvironment();
   const environment = pmrem.fromScene(room, .04);
   scene.environment = environment.texture;
+  scene.environmentIntensity = .65;
   room.dispose();
   pmrem.dispose();
   scene.add(new THREE.HemisphereLight(0xffffff, 0x606070, .6));
   const light = new THREE.DirectionalLight(0xffffff, 1.5);
-  light.position.set(3, 5, -2);
+  light.position.set(3, 7, -2);
+  light.castShadow = true;
+  light.shadow.mapSize.set(1024, 1024);
+  light.shadow.camera.left = -5; light.shadow.camera.right = 5;
+  light.shadow.camera.top = 5; light.shadow.camera.bottom = -5;
+  light.shadow.normalBias = .025;
+  light.shadow.bias = -.0002;
   scene.add(light);
   const draco = new DRACOLoader().setDecoderPath('/build/draco/');
   draco.setWorkerLimit(1);
@@ -33,6 +42,7 @@ export async function mountCarScene(stage) {
   let frame = 0, lastTime = 0, visible = false, disposed = false;
   let paused = false;
   let targetRotation = -.3;
+  let sceneProgress = 0, baseDistance = 10;
   let model, resizeObserver, visibilityObserver;
   let timeout;
 
@@ -74,10 +84,10 @@ export async function mountCarScene(stage) {
     model = gltf.scene;
     const body = model.getObjectByName('body');
     if (body) {
-      body.material = new THREE.MeshPhysicalMaterial({ color: 0xc94b2b, metalness: .75, roughness: .22, clearcoat: 1 });
+      body.material = new THREE.MeshPhysicalMaterial({ color: 0xc94b2b, metalness: .55, roughness: .32, clearcoat: 1 });
     }
     const glass = model.getObjectByName('glass');
-    if (glass) glass.material = new THREE.MeshPhysicalMaterial({ color: 0x8babb8, metalness: .2, roughness: .15, transparent: true, opacity: .65 });
+    if (glass) glass.material = new THREE.MeshPhysicalMaterial({ color: 0x26343a, metalness: .05, roughness: .12, transparent: true, opacity: .8 });
     const box = new THREE.Box3().setFromObject(model);
     const center = box.getCenter(new THREE.Vector3());
     model.position.sub(center);
@@ -88,18 +98,28 @@ export async function mountCarScene(stage) {
     model.rotation.y = -.3;
     const size = box.getSize(new THREE.Vector3());
     const radius = size.length() / 2;
-    const platform = new THREE.Mesh(new THREE.CylinderGeometry(3.2, 3.2, .025, 96), new THREE.MeshStandardMaterial({color: 0x151719, metalness: .5, roughness: .4}));
-    platform.position.y = -size.y / 2 - .05;
-    scene.add(platform);
+    group.traverse(object => { if (object.isMesh) { object.castShadow = true; object.receiveShadow = true; } });
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.ShadowMaterial({ color: 0x000000, opacity: .5 }));
+    ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -size.y / 2 - .015;
+    ground.receiveShadow = true;
+    scene.add(ground);
     viewport.appendChild(renderer.domElement);
-    function render() { if (!disposed) renderer.render(scene, camera); }
+    function render() {
+      if (disposed) return;
+      const approach = Math.sin(sceneProgress * Math.PI);
+      camera.position.set(.85 - approach * .16, .27 + approach * .1, -1).normalize().multiplyScalar(baseDistance * (1 - approach * .08));
+      camera.lookAt(0, -.1, 0);
+      light.intensity = 1.5 + approach * .4;
+      renderer.render(scene, camera);
+    }
     function resize() {
       const {width, height} = viewport.getBoundingClientRect();
       if (!width || !height || disposed) return;
       camera.aspect = width / height;
       const halfFov = Math.min(THREE.MathUtils.degToRad(camera.fov / 2), Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect));
-      const distance = radius / Math.sin(halfFov) * .93;
-      camera.position.set(.85, .24, -1).normalize().multiplyScalar(distance);
+      baseDistance = radius / Math.sin(halfFov) * .93;
+
       camera.lookAt(0, -.1, 0);
       camera.updateProjectionMatrix();
       renderer.setSize(width, height, false);
@@ -157,6 +177,10 @@ export async function mountCarScene(stage) {
     stage.dataset.state = 'ready';
     status.textContent = 'Ferrari 458 Italia / Stüdyo görünümü';
     draco.dispose();
+    return { setProgress(value) {
+      sceneProgress = reducedMotion.matches ? 0 : Math.max(0, Math.min(1, value));
+      if (visible && !document.hidden && paused) render();
+    } };
   } catch (error) {
     fallback();
     throw error;
