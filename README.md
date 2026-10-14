@@ -29,6 +29,7 @@ Uygulama MVC düzenini kullanır. İstek ilgili Express router üzerinden Contro
 
 | Controller | Sayfalar | Sorumluluk |
 | --- | --- | --- |
+| `homeController.js` | `Index`, `About` | Proje tanıtımı ve kapsamı |
 | `vehicleController.js` | `Catalog`, `Detail` | Araç arama, katalog ve araç bilgileri |
 | `maintenanceController.js` | `Logs`, `Guide` | Bakım kayıtları ve DIY içerikleri |
 | `reviewController.js` | `PartReviews`, `GarageFinder` | Parça karşılaştırması ve servis önerileri |
@@ -48,7 +49,7 @@ npm ci
 npm start
 ```
 
-Tarayıcıda http://localhost:3000 adresini açın. Ana sayfa araç kataloğudur.
+Tarayıcıda http://localhost:3000 adresini açın. Ana sayfa PitStop tanıtımıdır; araç kataloğu ayrı sayfadadır.
 İsteğe bağlı olarak `PORT` ortam değişkeniyle port değiştirilebilir.
 
 Geliştirme sırasında dosya değişikliklerinde sunucuyu yeniden başlatmak için:
@@ -64,6 +65,9 @@ npm test
 ```
 
 ## Sayfa adresleri
+
+- `/` — PitStop ana sayfası
+- `/Home/About` — proje hakkında
 
 - `/Vehicle/Catalog` — araç kataloğu
 - `/Vehicle/Detail` — araç detayı
@@ -99,3 +103,19 @@ Bu sürümdeki araç, bakım, parça ve servis kayıtları örnek amaçlıdır; 
 - Furkan Korkmaz
 - Ahmet Alperen Aydoğdu
 - Oğuz Han Uyar
+
+## Ana sayfa 3D sahnesi
+
+Ana sayfadaki Three.js araç sahnesi `frontend/home.js` üzerinden gerektiğinde
+yüklenir. Sahne kodu `frontend/car-scene.js`, EJS kabuğu
+`views/components/carStage.ejs` içindedir. Backend MVC akışı değişmez.
+
+`npm start`, `npm run dev` ve `npm test` öncesinde tarayıcı dosyaları otomatik
+derlenir. Frontend kaynakları değişirse `npm run build` çalıştırıp sayfayı
+yenileyin. Build için geliştirme bağımlılıkları dahil `npm ci` kullanın.
+`public/build` üretilen çıktıdır, Git'e eklenmez. Model ve Draco çözücüsü
+yerelden sunulur; çalışırken CDN bağlantısı gerekmez.
+
+Animasyon ekrandan çıkınca veya sekme gizlenince durur. Hareket azaltma
+tercihinde otomatik dönmez. 3D yüklenemezse mevcut SVG çizimi korunur.
+Model yaklaşık 1,6 MiB'dir; kaynak ve atıf `public/models/ATTRIBUTION.md` içindedir.

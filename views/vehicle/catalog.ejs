@@ -1,58 +1,27 @@
 <%- include('../partials/header') %>
-<section class="hero">
-    <p class="eyebrow">SAHİPLİK DENEYİMİ, TEK YERDE</p>
-    <h1>Aracını tanı.<br /><em>Sürprizleri azalt.</em></h1>
-    <p>Model ve motor tipine göre kronik sorunları, bakım kayıtlarını ve parça deneyimlerini keşfet.</p>
-
-    <form method="get" class="filters">
-        <input name="brand" placeholder="Marka ara" />
-        <input name="engine" placeholder="Motor tipi ara" />
-        <button type="submit">Filtrele</button>
-    </form>
+<section class="catalog-heading" aria-labelledby="catalog-title">
+    <a class="catalog-back" href="/">← Ana sayfa</a>
+    <p class="eyebrow">PITSTOP / ARAÇ KATALOĞU</p>
+    <h1 id="catalog-title">Bir modelden<br /><em>daha fazlasını keşfet.</em></h1>
+    <p>Motor özellikleri, teknik bilgiler ve dikkat edilmesi gereken noktalar. Araştırmaya bir araçla başla.</p>
 </section>
-
-<section class="section">
-    <div class="section-head">
-        <div>
-            <p class="eyebrow">ARAÇ KATALOĞU</p>
-            <h2>Popüler model ve motorlar</h2>
-        </div>
-        <span class="count"><%= vehicles.length %> araç</span>
-    </div>
-
-    <div class="table-wrap">
-        <table>
-            <thead>
-                <tr>
-                    <th>Marka / Model</th>
-                    <th>Motor</th>
-                    <th>Yıl</th>
-                    <th>Bilinen konu</th>
-                    <th>Seviye</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <% vehicles.forEach(vehicle => { %>
-                    <tr>
-                        <td>
-                            <strong><%= vehicle.brand %> <%= vehicle.model %></strong>
-                            <small><%= vehicle.fuel %> · <%= vehicle.power %> bg</small>
-                        </td>
-                        <td><%= vehicle.engine %></td>
-                        <td><%= vehicle.year %></td>
-                        <td><%= vehicle.knownIssue %></td>
-                        <td><span class="tag"><%= vehicle.issueLevel %></span></td>
-                        <td>
-                            <a class="arrow"
-                               href="/Vehicle/Detail?brand=<%= encodeURIComponent(vehicle.brand) %>&amp;model=<%= encodeURIComponent(vehicle.model) %>">
-                                İncele ↗
-                            </a>
-                        </td>
-                    </tr>
-                <% }) %>
-            </tbody>
-        </table>
-    </div>
+<section class="catalog-search" aria-label="Araç filtreleri">
+    <form method="get" action="/Vehicle/Catalog" class="catalog-filters">
+        <%- include('../components/field', { id: 'brand', name: 'brand', label: 'Marka', placeholder: 'Örn. Toyota', value: filters.brand }) %>
+        <%- include('../components/field', { id: 'engine', name: 'engine', label: 'Motor tipi', placeholder: 'Örn. 1.6 TDI', value: filters.engine }) %>
+        <%- include('../components/button', { label: 'Araçları bul', buttonType: 'submit' }) %>
+        <% if (hasFilters) { %><a class="button button--secondary" href="/Vehicle/Catalog">Temizle</a><% } %>
+    </form>
+    <p class="catalog-search__hint">Marka veya motor adının bir kısmını yazabilirsin.</p>
+</section>
+<section class="section" aria-labelledby="results-title">
+    <div class="section-head"><div><p class="eyebrow">KEŞİF LİSTEN</p><h2 id="results-title"><%= hasFilters ? 'Arama sonuçları' : 'Araçları yakından tanı' %></h2></div><span class="catalog-count"><%= vehicles.length %> araç</span></div>
+    <% if (hasFilters) { %><p class="catalog-query">Uygulanan filtreler: <% if (filters.brand.trim()) { %><strong>Marka: <%= filters.brand %></strong><% } %> <% if (filters.engine.trim()) { %><strong>Motor: <%= filters.engine %></strong><% } %></p><% } %>
+    <% if (vehicles.length) { %>
+        <div class="vehicle-grid"><% vehicles.forEach(vehicle => { %><%- include('../components/vehicleCard', { vehicle }) %><% }) %></div>
+    <% } else { %>
+        <div class="catalog-empty"><span class="eyebrow">BU ARAMADA SONUÇ YOK</span><h3>Başka bir aramayla deneyelim.</h3><p>Bu marka ve motor bilgileriyle eşleşen bir araç bulamadık. Daha kısa bir ifade yazabilir veya filtreleri temizleyebilirsin.</p><%- include('../components/linkButton', { href: '/Vehicle/Catalog', label: 'Tüm araçları göster' }) %></div>
+    <% } %>
+    <p class="catalog-disclosure">Katalog eğitim amaçlı örnek veriler içerir. Notlar, bir aracın güncel durumunu veya ekspertiz sonucunu göstermez.</p>
 </section>
 <%- include('../partials/footer') %>

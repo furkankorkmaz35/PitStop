@@ -1,0 +1,11 @@
+<%- include('../partials/header') %>
+<section class="hero compact"><p class="eyebrow">PITSTOP HAKKINDA</p><h1>Aracını anlamakla başlar.</h1><p>Araç sahipliğiyle ilgili bilgileri bir araya getiren, öğrenme ve keşif odaklı bir rehber.</p></section>
+<section class="home-about" aria-labelledby="purpose-title"><div><p class="eyebrow">AMACIMIZ</p><h2 id="purpose-title">Dağınık bilgiden<br />anlaşılır bir rehbere.</h2></div><div><p>PitStop; araçların teknik özelliklerini, bakım örneklerini, parça karşılaştırmalarını ve servis bilgilerini aynı çatı altında sunmayı amaçlar.</p><p>Kendi aracını araştıranların ve farklı modelleri tanımak isteyenlerin, temel bilgilere kolayca ulaşabileceği bir başlangıç noktası olarak tasarlandı.</p></div></section>
+<section class="section" aria-labelledby="scope-title"><div class="section-head"><div><p class="eyebrow">BUGÜNKÜ KAPSAM</p><h2 id="scope-title">Keşfetmek için hazır.</h2></div></div><div class="about-cards">
+<%- include('../components/card', { eyebrow: 'ARAÇLAR', heading: 'Katalog ve teknik bilgiler', description: 'Marka ve motor filtreleriyle araçları listele, model detaylarını incele.' }) %>
+<%- include('../components/card', { eyebrow: 'BAKIM', heading: 'Kayıtlar ve rehberler', description: 'Örnek bakım işlemlerini, maliyetlerini ve temel bakım konularını keşfet.' }) %>
+<%- include('../components/card', { eyebrow: 'PARÇA VE SERVİS', heading: 'Seçenekleri tanı', description: 'Parça incelemelerini karşılaştır ve şehir bazında örnek servisleri bul.' }) %>
+</div></section>
+<section class="note section" aria-labelledby="demo-title"><p class="eyebrow">VERİLER HAKKINDA</p><h2 id="demo-title">Bir eğitim projesi.</h2><p>Bu sürümdeki kayıtlar tanıtım ve eğitim amacıyla hazırlanmıştır. Gerçek kullanıcı yorumları, doğrulanmış servis puanları veya güncel fiyat teklifleri değildir.</p><p>Şu an hesap oluşturma, kişisel bakım kaydı ekleme ve kullanıcı katkısı gönderme özellikleri bulunmuyor.</p></section>
+<div class="home-actions section"><%- include('../components/linkButton', { href: '/Vehicle/Catalog', label: 'Araçları keşfet' }) %><%- include('../components/linkButton', { href: '/', label: 'Ana sayfaya dön', variant: 'secondary' }) %></div>
+<%- include('../partials/footer') %>

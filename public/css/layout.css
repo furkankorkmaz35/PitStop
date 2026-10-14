@@ -1,0 +1,29 @@
+/* Existing page compositions, kept separate from reusable elements. */
+.top { min-height: 88px; padding: 16px max(5vw, 24px); display: flex; align-items: center; justify-content: space-between; gap: var(--space-5); border-bottom: 1px solid var(--color-border); }
+.brand { color: var(--color-text); font-size: 23px; font-weight: 700; letter-spacing: -.03em; text-decoration: none; }
+.brand span { color: var(--color-accent); }
+.top nav { display: flex; flex-wrap: wrap; gap: 4px 20px; }
+.top nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--color-muted); font-size: var(--text-xs); text-decoration: none; }
+.top nav a:hover { color: var(--color-text); }
+main { max-width: var(--content-width); margin: 0 auto; padding: var(--space-6) 28px var(--space-8); }
+.hero { min-height: 330px; padding: 52px 6%; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-surface); }
+.hero.compact { min-height: 235px; }
+.hero h1 { margin: 6px 0 14px; font-size: clamp(2.125rem, 5vw, 4rem); line-height: 1.12; letter-spacing: -.045em; }
+.hero em { color: var(--color-accent); font-style: normal; }
+.hero > p:not(.eyebrow) { max-width: 590px; color: var(--color-muted); }
+.filters { width: min(660px, 100%); margin-top: var(--space-5); display: flex; align-items: flex-end; gap: var(--space-3); }
+.section { margin-top: var(--space-7); }
+.section-head { margin-bottom: var(--space-5); display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-5); }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-7); }
+footer { padding: 24px max(5vw, 24px); display: flex; justify-content: space-between; gap: var(--space-4); border-top: 1px solid var(--color-border); color: var(--color-muted); font-size: var(--text-xs); }
+@media (max-width: 780px) {
+  .top { align-items: flex-start; flex-direction: column; gap: var(--space-2); }
+  .top nav { gap: 0 18px; }
+  main { padding: 24px 16px 56px; }
+  .hero { min-height: 300px; padding: 32px 7%; }
+  .filters { flex-direction: column; align-items: stretch; }
+  .section-head { align-items: flex-start; flex-direction: column; }
+  .detail-grid { grid-template-columns: 1fr; gap: var(--space-5); }
+  .guide { align-items: flex-start; flex-direction: column; }
+  footer { flex-direction: column; }
+}

@@ -13,7 +13,7 @@
         <% guides.forEach(guide => { %>
             <article class="guide">
                 <div>
-                    <span class="tag"><%= guide.difficulty %></span>
+                    <%- include('../components/badge', { label: guide.difficulty, tone: 'accent' }) %>
                     <h3><%= guide.title %></h3>
                     <p><%= guide.summary %></p>
                 </div>

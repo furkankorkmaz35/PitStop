@@ -5,8 +5,8 @@
     <p>Şehir ve marka uzmanlığına göre önerileri incele.</p>
 
     <form method="get" class="filters">
-        <input name="city" placeholder="Şehir ara" />
-        <button type="submit">Servis ara</button>
+        <%- include('../components/field', { id: 'city', name: 'city', label: 'Şehir', placeholder: 'Şehir ara' }) %>
+        <%- include('../components/button', { label: 'Servis ara', buttonType: 'submit' }) %>
     </form>
 </section>
 

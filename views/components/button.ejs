@@ -1,0 +1,2 @@
+<% const style = typeof variant !== 'undefined' && variant === 'secondary' ? 'secondary' : 'primary'; %>
+<button class="button button--<%= style %>" type="<%= typeof buttonType !== 'undefined' && buttonType === 'submit' ? 'submit' : 'button' %>" <%= typeof disabled !== 'undefined' && disabled ? 'disabled' : '' %>><%= label %></button>

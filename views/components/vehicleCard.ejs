@@ -1,0 +1,8 @@
+<article class="vehicle-card">
+    <div class="vehicle-card__top"><span class="eyebrow"><%= vehicle.brand %></span><span class="muted"><%= vehicle.year %></span></div>
+    <h3><%= vehicle.brand %> <%= vehicle.model %></h3>
+    <p class="vehicle-card__engine"><%= vehicle.engine %></p>
+    <dl class="vehicle-card__specs"><div><dt>Yakıt</dt><dd><%= vehicle.fuel %></dd></div><div><dt>Güç</dt><dd><%= vehicle.power %> bg</dd></div><div><dt>Model yılı</dt><dd><%= vehicle.year %></dd></div></dl>
+    <div class="vehicle-card__note"><div class="vehicle-card__note-heading"><span>Dikkat edilecek noktalar</span><%- include('badge', { label: vehicle.issueLevel, tone: vehicle.issueLevel === 'Düşük' ? 'success' : 'warning' }) %></div><p><%= vehicle.knownIssue %></p></div>
+    <a class="arrow vehicle-card__link" href="/Vehicle/Detail?brand=<%= encodeURIComponent(vehicle.brand) %>&amp;model=<%= encodeURIComponent(vehicle.model) %>" aria-label="<%= vehicle.brand %> <%= vehicle.model %> detaylarını incele">Aracı incele <span aria-hidden="true">↗</span></a>
+</article>

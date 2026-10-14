@@ -7,7 +7,7 @@ export function catalog(req, res) {
   const filteredVehicles = vehicles.filter(vehicle =>
     matches(vehicle.brand, brand) && matches(vehicle.engine, engine));
 
-  res.render('vehicle/catalog', { title: 'Araç Kataloğu', vehicles: filteredVehicles });
+  res.render('vehicle/catalog', { title: 'Araç Kataloğu', vehicles: filteredVehicles, filters: { brand, engine }, hasFilters: Boolean(brand.trim() || engine.trim()) });
 }
 
 export function detail(req, res) {

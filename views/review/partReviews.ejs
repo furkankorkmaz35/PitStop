@@ -9,7 +9,7 @@
     <p class="eyebrow">TOPLULUK İNCELEMELERİ</p>
     <h2>Uyumlu parça notları</h2>
 
-    <div class="table-wrap">
+    <div class="table-wrap" role="region" aria-label="<%= title %> tablosu" tabindex="0">
         <table>
             <thead>
                 <tr>
@@ -25,7 +25,7 @@
                 <% reviews.forEach(review => { %>
                     <tr>
                         <td><strong><%= review.part %></strong></td>
-                        <td><span class="tag"><%= review.type %></span></td>
+                        <td><%- include('../components/badge', { label: review.type, tone: 'accent' }) %></td>
                         <td><%= review.vehicle %></td>
                         <td><%= review.pros %></td>
                         <td><%= review.cons %></td>

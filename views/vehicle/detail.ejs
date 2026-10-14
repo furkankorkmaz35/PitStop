@@ -1,42 +1,24 @@
 <%- include('../partials/header') %>
-<section class="hero compact">
-    <p class="eyebrow">ARAÇ DETAYI · <%= vehicle.year %></p>
-    <h1><%= vehicle.brand %> <%= vehicle.model %></h1>
-    <p><%= vehicle.engine %> · <%= vehicle.power %> bg · <%= vehicle.fuel %></p>
+<nav class="vehicle-breadcrumb" aria-label="Sayfa yolu"><a href="/">Ana sayfa</a><span aria-hidden="true">/</span><a href="/Vehicle/Catalog">Araç kataloğu</a><span aria-hidden="true">/</span><span aria-current="page"><%= vehicle.brand %> <%= vehicle.model %></span></nav>
+<section class="vehicle-heading" aria-labelledby="vehicle-title">
+    <div><p class="eyebrow">PITSTOP / MODEL REHBERİ</p><h1 id="vehicle-title"><%= vehicle.brand %> <%= vehicle.model %></h1><p class="vehicle-heading__engine"><%= vehicle.engine %></p></div>
+    <div class="vehicle-heading__meta"><%- include('../components/badge', { label: vehicle.year + ' model', tone: 'accent' }) %><%- include('../components/badge', { label: vehicle.fuel }) %></div>
 </section>
-
-<section class="section detail-grid">
-    <div>
-        <p class="eyebrow">TEKNİK ÖZET</p>
-        <h2>Aracın temel bilgileri</h2>
-
-        <dl>
-            <dt>Model yılı</dt>
-            <dd><%= vehicle.year %></dd>
-
-            <dt>Motor</dt>
-            <dd><%= vehicle.engine %></dd>
-
-            <dt>Yakıt</dt>
-            <dd><%= vehicle.fuel %></dd>
-
-            <dt>Güç</dt>
-            <dd><%= vehicle.power %> bg</dd>
-        </dl>
-    </div>
-
-    <div class="note">
-        <p class="eyebrow">TOPLULUK NOTU</p>
-        <h3>Kullanıcıların dikkat çektiği konu</h3>
-        <p><%= vehicle.knownIssue %></p>
-        <span class="tag">Önem seviyesi: <%= vehicle.issueLevel %></span>
-        <p class="muted">Bu bilgi kullanıcı katkısı niteliğindedir; araç ve bakım geçmişine göre değişebilir.</p>
-    </div>
+<section class="vehicle-overview" aria-labelledby="spec-title">
+    <div class="vehicle-spec-panel"><p class="eyebrow">01 / TEKNİK ÖZET</p><h2 id="spec-title">Temel bilgiler, bir bakışta.</h2><dl class="vehicle-spec-grid">
+        <div><dt>Marka</dt><dd><%= vehicle.brand %></dd></div>
+        <div><dt>Model</dt><dd><%= vehicle.model %></dd></div>
+        <div><dt>Motor</dt><dd><%= vehicle.engine %></dd></div>
+        <div><dt>Model yılı</dt><dd><%= vehicle.year %></dd></div>
+        <div><dt>Yakıt türü</dt><dd><%= vehicle.fuel %></dd></div>
+        <div><dt>Motor gücü</dt><dd><%= vehicle.power %> <span>bg</span></dd></div>
+    </dl></div>
+    <aside class="vehicle-note" aria-labelledby="note-title"><p class="eyebrow">02 / MODEL NOTU</p><h2 id="note-title">Nelere dikkat etmeli?</h2><p class="vehicle-note__text"><%= vehicle.knownIssue %></p><div class="vehicle-note__level"><span>Örnek önem seviyesi</span><%- include('../components/badge', { label: vehicle.issueLevel, tone: vehicle.issueLevel === 'Düşük' ? 'success' : 'warning' }) %></div><p class="vehicle-note__disclaimer">Bu not eğitim amaçlı örnek veridir. Gerçek kullanıcı katkısı veya bu araca özel bir ekspertiz değerlendirmesi değildir.</p></aside>
 </section>
-
-<section class="section">
-    <p class="eyebrow">KULLANICI DENEYİMLERİ</p>
-    <h2>Sahiplerden kısa notlar</h2>
-    <p class="muted">Bu model için inceleme alanı hazır. Sonraki aşamada doğrulanmış kullanıcı katkıları eklenecek.</p>
-</section>
+<section class="section" aria-labelledby="explore-title"><div class="section-head"><div><p class="eyebrow">BİR SONRAKİ DURAK</p><h2 id="explore-title">Araştırmaya devam et.</h2></div></div><p class="muted">Aşağıdaki bağlantılar genel rehberleri açar; bu modele göre filtrelenmiş içerikler değildir.</p><div class="vehicle-resources">
+    <%- include('../components/featureCard', { number: '01', heading: 'Bakım kayıtları', description: 'Örnek bakım işlemlerini, kullanılan parçaları ve maliyetleri incele.', href: '/Maintenance/Logs', label: 'Kayıtlara göz at' }) %>
+    <%- include('../components/featureCard', { number: '02', heading: 'Bakım rehberleri', description: 'Temel bakım konularını, zorluk seviyelerini ve tahmini süreleri keşfet.', href: '/Maintenance/Guide', label: 'Rehberleri keşfet' }) %>
+    <%- include('../components/featureCard', { number: '03', heading: 'Parça incelemeleri', description: 'Orijinal ve yan sanayi parça seçeneklerinin artı ve eksilerine bak.', href: '/Review/PartReviews', label: 'İncelemeleri aç' }) %>
+</div></section>
+<section class="vehicle-community section" aria-labelledby="community-title"><div><p class="eyebrow">KULLANICI DENEYİMLERİ</p><h2 id="community-title">Deneyimler için bir başlangıç.</h2><p>Bu model için henüz kullanıcı yorumu bulunmuyor. Şu an gördüğün bilgiler örnek kayıtlardan oluşuyor; yorum gönderme özelliği henüz açık değil.</p></div><%- include('../components/linkButton', { href: '/Vehicle/Catalog', label: 'Kataloğa dön', variant: 'secondary' }) %></section>
 <%- include('../partials/footer') %>
