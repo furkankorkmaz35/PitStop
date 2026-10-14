@@ -141,3 +141,17 @@ test('vehicle detail shows selected specifications and honest resource links', a
   assert.match(html, /href="\/Vehicle\/Catalog"/);
   assert.doesNotMatch(html, /Toyota Corolla|Kullanıcıların dikkat çektiği/);
 });
+
+test('garage search handles Turkish casing, whitespace and escaped filter values', async () => {
+  const html = await page('/Review/GarageFinder?city=' + encodeURIComponent(' istanbul '));
+  assert.match(html, /Usta Garaj/);
+  assert.match(html, /1 servis/);
+  assert.match(html, /value=" istanbul "/);
+  assert.doesNotMatch(html, /Anadolu Oto Servis|Ege Motor/);
+  assert.match(await page('/Review/GarageFinder?city=' + encodeURIComponent('İZMİR')), /Ege Motor/);
+  const empty = await page('/Review/GarageFinder?city=%3Cscript%3E');
+  assert.match(empty, /0 servis/);
+  assert.match(empty, /value="&lt;script&gt;"/);
+  assert.match(empty, /Tüm servisleri göster/);
+  assert.doesNotMatch(empty, /<script>/);
+});

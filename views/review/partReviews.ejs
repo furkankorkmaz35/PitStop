@@ -1,41 +1,25 @@
 <%- include('../partials/header') %>
-<section class="hero compact">
+<section class="review-heading" aria-labelledby="reviews-title">
     <p class="eyebrow">PARÇA KARŞILAŞTIRMA</p>
-    <h1>Doğru parçayı seç.</h1>
-    <p>Orijinal ve yan sanayi seçeneklerini araç uyumu ve kullanıcı deneyimiyle değerlendir.</p>
+    <h1 id="reviews-title">Parçayı tanı.<br>Seçimini bilinçli yap.</h1>
+    <p>Orijinal ve yan sanayi seçeneklerini, araç uyumunu ve artılarını aynı yerde incele.</p>
 </section>
-
-<section class="section">
-    <p class="eyebrow">TOPLULUK İNCELEMELERİ</p>
-    <h2>Uyumlu parça notları</h2>
-
-    <div class="table-wrap" role="region" aria-label="<%= title %> tablosu" tabindex="0">
-        <table>
-            <thead>
-                <tr>
-                    <th>Parça</th>
-                    <th>Seçenek</th>
-                    <th>Araç uyumu</th>
-                    <th>Artıları</th>
-                    <th>Dikkat</th>
-                    <th>Puan</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% reviews.forEach(review => { %>
-                    <tr>
-                        <td><strong><%= review.part %></strong></td>
-                        <td><%- include('../components/badge', { label: review.type, tone: 'accent' }) %></td>
-                        <td><%= review.vehicle %></td>
-                        <td><%= review.pros %></td>
-                        <td><%= review.cons %></td>
-                        <td>★ <%= review.score %></td>
-                    </tr>
-                <% }) %>
-            </tbody>
-        </table>
+<section class="section" aria-labelledby="parts-title">
+    <div class="section-head">
+        <div><p class="eyebrow">ÖRNEK İNCELEMELER</p><h2 id="parts-title">Uyumlu parça notları</h2></div>
+        <span class="count"><%= reviews.length %> parça notu</span>
     </div>
-
-    <p class="muted">Uyumluluğu sipariş öncesi şasi numarası ve üretici kataloğuyla doğrulayın.</p>
+    <div class="review-grid">
+        <% reviews.forEach(review => { %>
+            <%- include('../components/partReviewCard', { review }) %>
+        <% }) %>
+    </div>
+    <p class="muted">Notlar ve puanlar eğitim amaçlı örneklerdir; gerçek kullanıcı değerlendirmesi değildir.</p>
 </section>
+<aside class="section review-note" aria-labelledby="compatibility-title">
+    <p class="eyebrow">UYUM KONTROLÜ</p>
+    <h2 id="compatibility-title">Aynı model, farklı parça olabilir.</h2>
+    <p>Uyumluluğu sipariş öncesi şasi numarası ve üretici kataloğuyla doğrulayın.</p>
+    <%- include('../components/linkButton', { href: '/Vehicle/Catalog', label: 'Araç kataloğunu incele', variant: 'secondary' }) %>
+</aside>
 <%- include('../partials/footer') %>

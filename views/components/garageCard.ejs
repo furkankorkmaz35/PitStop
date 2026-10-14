@@ -1,0 +1,12 @@
+<article class="review-card">
+    <div class="review-card__meta">
+        <%- include('badge', { label: garage.city, tone: 'accent' }) %>
+        <span class="review-score" aria-label="Örnek puan: <%= garage.score %> / 5"><span aria-hidden="true">★</span> <%= garage.score %><small> / 5</small></span>
+    </div>
+    <h3><%= garage.name %></h3>
+    <dl class="review-facts">
+        <div><dt>Uzmanlık alanı</dt><dd><%= garage.specialty %></dd></div>
+        <div><dt>İlgilendiği markalar</dt><dd><%= garage.brands %></dd></div>
+    </dl>
+    <p class="review-card__demo">Temsili işletme · Örnek puan</p>
+</article>

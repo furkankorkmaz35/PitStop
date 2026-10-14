@@ -7,8 +7,6 @@ import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 export async function mountCarScene(stage) {
   const viewport = stage.querySelector('[data-car-viewport]');
   const status = stage.querySelector('[data-car-status]');
-  const toolbar = stage.querySelector('[data-car-controls]');
-  const pauseButton = stage.querySelector('[data-car-pause]');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
   const events = new AbortController();
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'low-power' });
@@ -34,6 +32,7 @@ export async function mountCarScene(stage) {
   const loader = new GLTFLoader().setDRACOLoader(draco);
   let frame = 0, lastTime = 0, visible = false, disposed = false;
   let paused = reducedMotion.matches;
+  let targetRotation = -.3;
   let model, resizeObserver, visibilityObserver;
   let timeout;
 
@@ -63,7 +62,6 @@ export async function mountCarScene(stage) {
   }
   function fallback() {
     stage.dataset.state = 'fallback';
-    toolbar.hidden = true;
     status.textContent = '3D görünüm açılamadı. Araç illüstrasyonu gösteriliyor.';
     dispose();
   }
@@ -76,7 +74,7 @@ export async function mountCarScene(stage) {
     model = gltf.scene;
     const body = model.getObjectByName('body');
     if (body) {
-      body.material = new THREE.MeshPhysicalMaterial({ color: 0xff6b35, metalness: .75, roughness: .3, clearcoat: 1 });
+      body.material = new THREE.MeshPhysicalMaterial({ color: 0xc94b2b, metalness: .75, roughness: .22, clearcoat: 1 });
     }
     const glass = model.getObjectByName('glass');
     if (glass) glass.material = new THREE.MeshPhysicalMaterial({ color: 0x8babb8, metalness: .2, roughness: .15, transparent: true, opacity: .65 });
@@ -90,7 +88,7 @@ export async function mountCarScene(stage) {
     model.rotation.y = -.3;
     const size = box.getSize(new THREE.Vector3());
     const radius = size.length() / 2;
-    const platform = new THREE.Mesh(new THREE.CylinderGeometry(2.8, 2.8, .05, 64), new THREE.MeshStandardMaterial({color: 0x24292d, metalness: .35, roughness: .65}));
+    const platform = new THREE.Mesh(new THREE.CylinderGeometry(3.2, 3.2, .025, 96), new THREE.MeshStandardMaterial({color: 0x151719, metalness: .5, roughness: .4}));
     platform.position.y = -size.y / 2 - .05;
     scene.add(platform);
     viewport.appendChild(renderer.domElement);
@@ -101,7 +99,7 @@ export async function mountCarScene(stage) {
       camera.aspect = width / height;
       const halfFov = Math.min(THREE.MathUtils.degToRad(camera.fov / 2), Math.atan(Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * camera.aspect));
       const distance = radius / Math.sin(halfFov) * .93;
-      camera.position.set(.8, .38, -1).normalize().multiplyScalar(distance);
+      camera.position.set(.85, .24, -1).normalize().multiplyScalar(distance);
       camera.lookAt(0, -.1, 0);
       camera.updateProjectionMatrix();
       renderer.setSize(width, height, false);
@@ -109,29 +107,23 @@ export async function mountCarScene(stage) {
     }
     function tick(time) {
       frame = 0;
-      if (disposed || paused || !visible || document.hidden) return;
-      model.rotation.y += Math.min((time - (lastTime || time)) / 1000, .05) * .16;
+      if (disposed || !visible || document.hidden) return;
+      if (!paused) targetRotation += Math.min((time - (lastTime || time)) / 1000, .05) * .1;
+      model.rotation.y += (targetRotation - model.rotation.y) * .12;
+      if (Math.abs(targetRotation - model.rotation.y) < .001) model.rotation.y = targetRotation;
       lastTime = time;
       render();
-      frame = requestAnimationFrame(tick);
+      if (!paused || model.rotation.y !== targetRotation) frame = requestAnimationFrame(tick);
     }
     function sync() {
       cancelAnimationFrame(frame);
       frame = 0; lastTime = 0;
-      pauseButton.textContent = paused ? 'Döndürmeyi başlat' : 'Döndürmeyi durdur';
-      pauseButton.setAttribute('aria-pressed', String(!paused));
-      if (!disposed && visible && !document.hidden && !paused) frame = requestAnimationFrame(tick);
+      if (!disposed && visible && !document.hidden && (!paused || model.rotation.y !== targetRotation)) frame = requestAnimationFrame(tick);
     }
     resizeObserver = new ResizeObserver(resize);
     resizeObserver.observe(viewport);
     visibilityObserver = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; sync(); });
     visibilityObserver.observe(stage);
-    pauseButton.addEventListener('click', () => { paused = !paused; sync(); }, {signal: events.signal});
-    for (const button of stage.querySelectorAll('[data-car-turn]')) button.addEventListener('click', () => {
-      paused = true;
-      model.rotation.y += Number(button.dataset.carTurn) * Math.PI / 6;
-      sync(); render();
-    }, {signal: events.signal});
     reducedMotion.addEventListener('change', () => { paused = reducedMotion.matches; sync(); }, {signal: events.signal});
     document.addEventListener('visibilitychange', sync, {signal: events.signal});
     window.addEventListener('pagehide', dispose, {once: true, signal: events.signal});
@@ -139,8 +131,7 @@ export async function mountCarScene(stage) {
     renderer.domElement.addEventListener('webglcontextlost', event => { event.preventDefault(); fallback(); }, {signal: events.signal});
     resize(); sync();
     stage.dataset.state = 'ready';
-    toolbar.hidden = false;
-    status.textContent = 'Aracı farklı açılardan keşfet.';
+    status.textContent = 'Ferrari 458 Italia / Stüdyo görünümü';
     draco.dispose();
   } catch (error) {
     fallback();

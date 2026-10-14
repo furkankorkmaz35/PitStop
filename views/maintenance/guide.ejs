@@ -1,25 +1,35 @@
 <%- include('../partials/header') %>
-<section class="hero compact">
-    <p class="eyebrow">KENDİN YAP REHBERİ</p>
-    <h1>Bakım bilgisi, adım adım.</h1>
-    <p>Temel kontrolleri öğren; güvenlik ve üretici tavsiyelerini önceliklendir.</p>
+<section class="maintenance-heading" aria-labelledby="guide-title">
+    <div>
+        <p class="eyebrow">BAKIM KÜTÜPHANESİ</p>
+        <h1 id="guide-title">Aracını tanımaya buradan başla.</h1>
+        <p>Temel bakım konularına kısa bir bakış. Zorluk ve tahmini süre bilgileriyle içerikleri incele.</p>
+    </div>
+    <%- include('../components/linkButton', { href: '/Maintenance/Logs', label: 'Örnek bakım kayıtları', variant: 'secondary' }) %>
 </section>
-
-<section class="section">
-    <p class="eyebrow">BAŞLANGIÇ REHBERLERİ</p>
-    <h2>Bakım kütüphanesi</h2>
-
-    <div class="guide-list">
-        <% guides.forEach(guide => { %>
-            <article class="guide">
-                <div>
-                    <%- include('../components/badge', { label: guide.difficulty, tone: 'accent' }) %>
-                    <h3><%= guide.title %></h3>
-                    <p><%= guide.summary %></p>
-                </div>
-                <span class="duration"><%= guide.duration %></span>
-            </article>
+<section class="section" aria-labelledby="guides-title">
+    <div class="section-head">
+        <div><p class="eyebrow">KENDİN YAP REHBERİ</p><h2 id="guides-title">Bakım bilgisi, adım adım.</h2></div>
+        <span class="count"><%= guides.length %> konu özeti</span>
+    </div>
+    <div class="maintenance-guides">
+        <% guides.forEach((guide, index) => { %>
+        <article class="maintenance-guide">
+            <div class="maintenance-guide__meta">
+                <span class="maintenance-guide__number" aria-hidden="true"><%= String(index + 1).padStart(2, '0') %></span>
+                <%- include('../components/badge', { label: guide.difficulty, tone: guide.difficulty === 'Kolay' ? 'success' : 'warning' }) %>
+            </div>
+            <h3><%= guide.title %></h3>
+            <p><%= guide.summary %></p>
+            <div class="maintenance-guide__duration"><span>Tahmini süre</span><strong><%= guide.duration %></strong></div>
+        </article>
         <% }) %>
     </div>
+    <p class="muted">Bu içerikler örnek konu özetleridir; ayrıntılı uygulama adımları henüz bulunmuyor.</p>
 </section>
+<aside class="section maintenance-note" aria-labelledby="guide-note-title">
+    <p class="eyebrow">BAŞLAMADAN ÖNCE</p>
+    <h2 id="guide-note-title">Önce aracının kitapçığı.</h2>
+    <p>Bakım aralıkları ve parça standartları araca göre değişir. Üretici talimatlarını esas al; emin olmadığın işlemler için uzman desteği al.</p>
+</aside>
 <%- include('../partials/footer') %>

@@ -1,32 +1,32 @@
 <%- include('../partials/header') %>
-<section class="hero compact">
+<section class="review-heading" aria-labelledby="garages-title">
     <p class="eyebrow">USTA VE SERVİS REHBERİ</p>
-    <h1>Aracını bilen servisi bul.</h1>
-    <p>Şehir ve marka uzmanlığına göre önerileri incele.</p>
-
-    <form method="get" class="filters">
-        <%- include('../components/field', { id: 'city', name: 'city', label: 'Şehir', placeholder: 'Şehir ara' }) %>
-        <%- include('../components/button', { label: 'Servis ara', buttonType: 'submit' }) %>
-    </form>
+    <h1 id="garages-title">Aracını bilen<br>servisi keşfet.</h1>
+    <p>Şehre göre örnek servisleri bul; uzmanlık alanlarını ve ilgilendikleri markaları karşılaştır.</p>
 </section>
-
-<section class="section">
-    <p class="eyebrow">ÖRNEK LİSTE</p>
-    <h2>Servis önerileri</h2>
-
-    <div class="guide-list">
-        <% garages.forEach(garage => { %>
-            <article class="guide">
-                <div>
-                    <span class="eyebrow"><%= garage.city %> · <%= garage.brands %></span>
-                    <h3><%= garage.name %></h3>
-                    <p><%= garage.specialty %></p>
-                </div>
-                <strong>★ <%= garage.score %></strong>
-            </article>
-        <% }) %>
+<form action="/Review/GarageFinder" method="get" class="review-filter" role="search" aria-label="Şehre göre servis ara">
+    <%- include('../components/field', { id: 'city', name: 'city', label: 'Şehir', placeholder: 'Örn. İstanbul', value: city }) %>
+    <%- include('../components/button', { label: 'Servis ara', buttonType: 'submit' }) %>
+    <% if (hasFilter) { %><%- include('../components/linkButton', { href: '/Review/GarageFinder', label: 'Filtreyi temizle', variant: 'secondary' }) %><% } %>
+</form>
+<section class="section" aria-labelledby="results-title">
+    <div class="section-head">
+        <div><p class="eyebrow">ÖRNEK LİSTE</p><h2 id="results-title">Servis rehberi</h2></div>
+        <span class="count"><%= garages.length %> servis</span>
     </div>
-
-    <p class="muted">Örnek işletmeler temsili veridir; gerçek öneriler kullanıcı katkısıyla doğrulanacaktır.</p>
+    <% if (hasFilter) { %><p class="muted">Şehir araması: <strong><%= city %></strong></p><% } %>
+    <% if (garages.length) { %>
+        <div class="review-grid">
+            <% garages.forEach(garage => { %><%- include('../components/garageCard', { garage }) %><% }) %>
+        </div>
+    <% } else { %>
+        <div class="review-empty">
+            <p class="eyebrow">SONUÇ BULUNAMADI</p>
+            <h3>Başka bir şehir deneyebilirsin.</h3>
+            <p>Bu aramayla eşleşen örnek servis bulunmuyor. Filtreyi temizleyerek tüm listeye dönebilirsin.</p>
+            <%- include('../components/linkButton', { href: '/Review/GarageFinder', label: 'Tüm servisleri göster', variant: 'secondary' }) %>
+        </div>
+    <% } %>
+    <p class="muted">İşletmeler ve puanlar temsili veridir; gerçek servis önerisi değildir. İletişim ve randevu özelliği henüz bulunmuyor.</p>
 </section>
 <%- include('../partials/footer') %>

@@ -1,46 +1,42 @@
 <%- include('../partials/header') %>
-<section class="hero compact">
-    <p class="eyebrow">BAKIM GEÇMİŞİ</p>
-    <h1>Harcamalarını takip et.</h1>
-    <p>Bakım tarihlerini ve maliyetlerini tek yerde gör.</p>
+<section class="maintenance-heading" aria-labelledby="maintenance-title">
+    <div>
+        <p class="eyebrow">BAKIM GEÇMİŞİ</p>
+        <h1 id="maintenance-title">Her bakımın bir kaydı olsun.</h1>
+        <p>İşlem, parça ve servis bilgilerini bir arada incele. Bakım harcamalarının nereye gittiğini gör.</p>
+    </div>
+    <%- include('../components/linkButton', { href: '/Maintenance/Guide', label: 'Bakım rehberlerini keşfet', variant: 'secondary' }) %>
 </section>
 
-<section class="section">
-    <div class="section-head">
-        <div>
-            <p class="eyebrow">ÖRNEK GARAJ</p>
-            <h2>Son bakım kayıtları</h2>
-        </div>
-        <strong class="total">Toplam ₺<%= totalCost.toLocaleString("tr-TR") %></strong>
-    </div>
+<section class="maintenance-stats" aria-label="Örnek kayıtların özeti">
+    <%- include('../components/statCard', { label: 'BAKIM MALİYETİ', value: 'Toplam ₺' + totalCost.toLocaleString('tr-TR'), hint: 'Listelenen örnek işlemlerin toplamı' }) %>
+    <%- include('../components/statCard', { label: 'KAYIT SAYISI', value: logs.length + ' işlem', hint: 'Örnek bakım geçmişi' }) %>
+    <%- include('../components/statCard', { label: 'VERİ KAPSAMI', value: 'Demo garaj', hint: 'Kişisel araç veya servis kaydı değildir' }) %>
+</section>
 
-    <div class="table-wrap" role="region" aria-label="<%= title %> tablosu" tabindex="0">
+<section class="section" aria-labelledby="logs-title">
+    <div class="section-head">
+        <div><p class="eyebrow">İŞLEM DÖKÜMÜ</p><h2 id="logs-title">Bakım kayıtları</h2></div>
+        <%- include('../components/badge', { label: 'Örnek veriler', tone: 'accent' }) %>
+    </div>
+    <p class="muted" id="logs-help">Tarih, araç ve işlem bazında tüm detaylar. Küçük ekranlarda tabloyu yatay kaydırabilirsin.</p>
+    <div class="table-wrap maintenance-table" role="region" aria-label="Bakım kayıtları tablosu" aria-describedby="logs-help" tabindex="0">
         <table>
-            <thead>
-                <tr>
-                    <th>Tarih</th>
-                    <th>Araç</th>
-                    <th>İşlem</th>
-                    <th>Parça</th>
-                    <th>Servis</th>
-                    <th>Maliyet</th>
-                </tr>
-            </thead>
+            <thead><tr><th scope="col">Tarih</th><th scope="col">Araç</th><th scope="col">İşlem / Parça</th><th scope="col">Servis</th><th scope="col">Maliyet</th></tr></thead>
             <tbody>
                 <% logs.forEach(log => { %>
-                    <tr>
-                        <td><%= log.date %></td>
-                        <td><strong><%= log.vehicle %></strong></td>
-                        <td><%= log.operation %></td>
-                        <td><%= log.part %></td>
-                        <td><%= log.service %></td>
-                        <td><strong>₺<%= log.cost.toLocaleString("tr-TR") %></strong></td>
-                    </tr>
+                <tr>
+                    <td><%= log.date %></td>
+                    <td><strong><%= log.vehicle %></strong></td>
+                    <td><%= log.operation %><small><%= log.part %></small></td>
+                    <td><%= log.service %></td>
+                    <td class="maintenance-table__cost"><strong>₺<%= log.cost.toLocaleString('tr-TR') %></strong></td>
+                </tr>
                 <% }) %>
+                <% if (!logs.length) { %><tr><td colspan="5">Henüz bakım kaydı bulunmuyor.</td></tr><% } %>
             </tbody>
         </table>
     </div>
-
-    <p class="muted">Görünen kayıtlar örnek amaçlıdır.</p>
+    <p class="muted">Görünen kayıtlar örnek amaçlıdır. Bu aşamada kayıt ekleme veya düzenleme özelliği bulunmuyor.</p>
 </section>
 <%- include('../partials/footer') %>

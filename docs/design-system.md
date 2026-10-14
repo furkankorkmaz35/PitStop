@@ -123,3 +123,40 @@ etiketlenmez. Yerleşim `public/css/vehicle-detail.css` içindedir.
 
 Doğrulama: 11 test; seçilen dört aracın detay eşleşmesi, Volkswagen teknik
 bilgileri, masaüstü görünüm ve 390px mobilde taşmasız yerleşim.
+
+## Altıncı aşama: bakım bölümü
+
+Bakım kayıtları ve rehber sayfaları ortak tema ile yenilendi. `statCard` bileşeni
+controller'dan gelen toplamı ve kayıt sayısını gösterir. İşlem ve parça aynı
+hücrede sunulur; tablo klavyeyle yatay kaydırılabilir. Rehber kartları mevcut
+özet, zorluk ve süre verilerini gösterir; detay sayfası varmış gibi davranmaz.
+Örnek veri kapsamı ve kayıt düzenleme özelliğinin bulunmadığı açıkça belirtilir.
+Sayfa yerleşimleri `maintenance.css` içindedir. Controller, model, route ve
+örnek veriler değişmedi; mobilde kartlar tek sütuna geçer.
+
+## Yedinci aşama: parça inceleme ve servis rehberi
+
+`partReviewCard` ve `garageCard` bileşenleri mevcut model verilerini sunar.
+Örnek puanlar gerçek kullanıcı değerlendirmesi olarak etiketlenmez. Sayfa
+stilleri `review.css` içindedir; kartlar mobilde tek sütuna iner.
+Servis GET aramasında şehir değeri korunur, filtre temizleme ve boş sonuç
+bağlantıları bulunur. Türkçe büyük/küçük harf eşleştirmesi ve baş/son boşlukların
+temizlenmesi ReviewController'da yapılır. Model ve route yapıları korunur.
+
+## Ana sayfa sanat yönü revizyonu
+
+Tekrarlayan kart/CTA blokları yerini dört satırlı keşif dizinine bıraktı.
+Açık stüdyo sahnesi, daha sakin tipografi ve ekran içine girerken tek seferlik
+geçişler kullanılır. Model başlangıçta sabittir; sürükleme ve ok düğmeleri
+hedef açıya yumuşak geçer. Otomatik dönüş kullanıcı tarafından açılır.
+Reduced motion geçişleri kaldırır. MVC verileri ve route'lar değişmedi.
+
+## Sabit sahne ve otomatik dönüş
+
+Manuel sürükleme ve açı düğmeleri kaldırıldı. Araç görünürken otomatik döner;
+gizli sekmede/ekran dışında döngü durur. Hareket azaltma tercihinde sabittir.
+900px genişlik ve 650px yükseklik üzerindeki ekranlarda, hareket azaltma kapalıysa
+ana sahne 260vh anlatı boyunca CSS sticky ile sabitlenir. Doğal scroll ilerlemesi
+metin geçişlerini, hafif sahne büyümesini ve ilerleme çizgisini yönetir.
+Scroll engellenmez; GSAP bağımlılığı eklenmeden aynı pin/scrub yaklaşımı kullanılır.
+Mobilde ve JavaScript olmadan normal sayfa akışı korunur.
