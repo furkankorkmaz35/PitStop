@@ -153,7 +153,13 @@ export function initGarageMap() {
     });
   });
 
-  // 7. Popup İçindeki "Sayfadaki Karta Git" Tıklaması
+  /**
+   * 7. Haritadan Karta Geçiş (Harita -> Liste İki Yönlü Bağlantısı):
+   * - Harita popup'ındaki "Sayfadaki Karta Git" butonuna basıldığında sayfa sarsılmadan,
+   *   pürüzsüzce (smooth scroll) ilgili karta kayar.
+   * - Sayfa karta vardıktan sonra (500ms gecikme ile) servis detay akordeonu açılır ve
+   *   kart turuncu neon çerçeve ile kullanıcının dikkatini çeker.
+   */
   map.on('popupopen', (e) => {
     const popupNode = e.popup.getElement();
     if (!popupNode) return;
@@ -166,13 +172,18 @@ export function initGarageMap() {
         for (const card of cards) {
           const title = card.querySelector('h3');
           if (title && title.textContent.trim() === garageName.trim()) {
+            // 1. Sayfayı yumuşak bir şekilde ilgili servis kartının ortasına kaydır
             card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            card.classList.add('garage-card--highlight');
-            setTimeout(() => card.classList.remove('garage-card--highlight'), 2400);
 
-            // Detaylar kapalıysa otomatik aç
-            const details = card.querySelector('.garage-card__details');
-            if (details) details.open = true;
+            // 2. Sayfa kayması tamamlandığında kartı vurgula ve detayları aç (Sıralı animasyon)
+            setTimeout(() => {
+              card.classList.add('garage-card--highlight');
+              const details = card.querySelector('.garage-card__details');
+              if (details) details.open = true;
+            }, 450);
+
+            // Vurguyu 2.5 saniye sonra kaldır
+            setTimeout(() => card.classList.remove('garage-card--highlight'), 3000);
             break;
           }
         }
@@ -180,7 +191,20 @@ export function initGarageMap() {
     }
   });
 
-  // 8. Servis Kartlarındaki "Haritada Gör 📍" Butonları ile Haritaya Uçuş
+  /**
+   * 8. Karttan Haritaya Geçiş (Liste -> Harita İki Yönlü Bağlantısı):
+   * ==========================================================================
+   * Pürüzsüz ve Sinematik Geçiş Mühendisliği (Chained Smooth Animation):
+   * - Problem: Sayfa yukarı kayarken aynı anda haritanın uçması gözü yoran, sarsıntılı
+   *   ve kaotik bir animasyona yol açar.
+   * - Çözüm (2 Aşamalı Sıralı Geçiş):
+   *   Adım 1: Kullanıcı butona bastığında önce sayfa yumuşakça harita alanına kaydırılır.
+   *   Adım 2: Kullanıcının gözü haritaya ulaştıktan sonra (~400ms sonra), Leaflet'in
+   *          'flyTo' fonksiyonu optimize edilmiş süre (1.6s) ve yumuşak kubik yavaşlama
+   *          (easeLinearity: 0.2) ile servisin pinine doğru zarifçe süzülür.
+   *   Adım 3: Uçuş tamamen bittiğinde ('moveend' olay dinleyicisi ile), popup tam
+   *          zamanında ve pürüzsüzce açılır.
+   */
   const locateButtons = document.querySelectorAll('.garage-card__locate-btn');
   locateButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -189,21 +213,28 @@ export function initGarageMap() {
       const marker = markerMap.get(garageName);
 
       if (marker) {
-        // Harita alanına yumuşak kaydır
+        // 1. Aşama: Sayfayı harita konteynerine yumuşakça kaydır
         const mapContainer = document.getElementById('garageMapWrapper');
         if (mapContainer) {
           mapContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // Haritada o noktaya animasyonla uç ve popup'ı aç
-        const latLng = marker.getLatLng();
-        map.flyTo(latLng, 14, {
-          duration: 1.2
-        });
-
+        // 2. Aşama: Sayfa haritaya ulaştıktan sonra harita kamerasını pürüzsüzce uçur
         setTimeout(() => {
-          marker.openPopup();
-        }, 1200);
+          const latLng = marker.getLatLng();
+
+          // Rastgele bir setTimeout yerine Leaflet'in 'moveend' olayını dinle
+          map.once('moveend', () => {
+            // Kamera yerine oturduğunda popup'ı aç
+            marker.openPopup();
+          });
+
+          // Sinematik, sarsıntısız ve yumuşak uçuş (zoom: 13, süre: 1.6s)
+          map.flyTo(latLng, 13, {
+            duration: 1.6,
+            easeLinearity: 0.2
+          });
+        }, 380);
       }
     });
   });
