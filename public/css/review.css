@@ -274,3 +274,14 @@
   .garage-map-head { flex-direction: column; align-items: flex-start; }
   .garage-map { height: 320px; }
 }
+
+/* ==========================================================================
+   OpenStreetMap API Anahtarsız Koyu Tema (Dark Mode) Filtresi
+   ==========================================================================
+   API key zorunluluğu olan ücretli harita sağlayıcıları yerine, tamamen ücretsiz
+   ve açık standart OpenStreetMap karolarını CSS filtreleri (invert/hue-rotate)
+   ile PitStop'un koyu temasına dönüştürür.
+*/
+.garage-map .leaflet-tile-pane {
+  filter: brightness(0.68) invert(1) contrast(2.4) hue-rotate(200deg) saturate(0.28);
+}

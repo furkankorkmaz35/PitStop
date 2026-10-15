@@ -98,11 +98,16 @@ export function initGarageMap() {
     attributionControl: true
   });
 
-  // 3. Şık Dark Mode Harita Katmanı (CartoDB Dark Matter)
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> &copy; <a href="https://carto.com/" target="_blank">CARTO</a>',
-    subdomains: 'abcd',
-    maxZoom: 19
+  /**
+   * 3. Harita Katmanı (Tile Layer):
+   * - Kesinlikle hiçbir API anahtarı (API Key), hesap veya kredi kartı gerektirmeyen
+   *   %100 açık kaynaklı ve ücretsiz resmi OpenStreetMap (OSM) katmanı.
+   * - Koyu tema dönüşümü CSS filtresi ile istemcide yapılır; böylece hiçbir zaman
+   *   API limitlerine veya anahtar zorunluluğuna takılmaz.
+   */
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> katkıda bulunanlar'
   }).addTo(map);
 
   // 4. Servis Pinlerini Haritaya Ekle ve Referanslarını Sakla
