@@ -170,3 +170,22 @@ test('navigation indicates current page and vehicle detail keeps catalog context
 });
 
 
+
+test('maintenance log generates individual downloadable PDF document', async () => {
+  const html = await page('/Maintenance/Logs');
+  assert.match(html, /\/Maintenance\/Logs\/1\/pdf/);
+  assert.match(html, /Belge Çıkart/);
+
+  const response = await fetch(baseUrl + '/Maintenance/Logs/1/pdf');
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get('content-type'), 'application/pdf');
+  const disposition = response.headers.get('content-disposition');
+  assert.match(disposition, /PitStop-Bakim-Kaydi-1/);
+
+  const buffer = Buffer.from(await response.arrayBuffer());
+  assert.ok(buffer.length > 5000);
+  assert.equal(buffer.toString('ascii', 0, 4), '%PDF');
+
+  const notFound = await fetch(baseUrl + '/Maintenance/Logs/999/pdf', { redirect: 'manual' });
+  assert.ok([404, 302].includes(notFound.status));
+});

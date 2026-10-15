@@ -23,15 +23,15 @@ export const vehicles = [
 ];
 
 export const maintenanceLogs = [
-  new MaintenanceLog("12.09.2026", "Toyota Corolla 1.6", "Periyodik bakım", "5W-30 yağ, yağ ve hava filtresi", 3850, "Özel servis"),
-  new MaintenanceLog("08.09.2026", "Volkswagen Golf 1.6 TDI", "Ön fren bakımı", "Ön balata seti ve işçilik", 2700, "Usta önerisi"),
-  new MaintenanceLog("21.08.2026", "Fiat Egea 1.3 Multijet", "Akü değişimi", "60 Ah EFB akü ve kutup başı kontrolü", 4200, "Yetkili servis"),
-  new MaintenanceLog("04.08.2026", "Honda Civic 1.6 i-VTEC", "Klima kontrolü", "Polen filtresi ve klima dezenfeksiyonu", 1450, "Özel servis"),
-  new MaintenanceLog("19.07.2026", "Renault Clio 1.0 TCe", "Periyodik bakım", "Motor yağı, yağ filtresi ve genel kontrol", 3100, "Özel servis"),
-  new MaintenanceLog("02.07.2026", "Ford Focus 1.5 TDCi", "Ön takım kontrolü", "Salıncak burcu ve rot ayarı", 3650, "Bağımsız servis"),
-  new MaintenanceLog("14.06.2026", "Opel Astra 1.4 Turbo", "Soğutma sistemi", "Antifriz yenileme ve kaçak kontrolü", 2200, "Özel servis"),
-  new MaintenanceLog("30.05.2026", "Hyundai i20 1.4 MPI", "Lastik ve fren kontrolü", "Balans, rotasyon ve fren ölçümü", 900, "Lastik servisi"),
-  new MaintenanceLog("16.05.2026", "Renault Megane 1.5 dCi", "Yakıt filtresi değişimi", "Dizel yakıt filtresi ve hava alma", 1850, "Bağımsız servis")
+  new MaintenanceLog("12.09.2026", "Toyota Corolla 1.6", "Periyodik bakım", "5W-30 yağ, yağ ve hava filtresi", 3850, "Özel servis", 1),
+  new MaintenanceLog("08.09.2026", "Volkswagen Golf 1.6 TDI", "Ön fren bakımı", "Ön balata seti ve işçilik", 2700, "Usta önerisi", 2),
+  new MaintenanceLog("21.08.2026", "Fiat Egea 1.3 Multijet", "Akü değişimi", "60 Ah EFB akü ve kutup başı kontrolü", 4200, "Yetkili servis", 3),
+  new MaintenanceLog("04.08.2026", "Honda Civic 1.6 i-VTEC", "Klima kontrolü", "Polen filtresi ve klima dezenfeksiyonu", 1450, "Özel servis", 4),
+  new MaintenanceLog("19.07.2026", "Renault Clio 1.0 TCe", "Periyodik bakım", "Motor yağı, yağ filtresi ve genel kontrol", 3100, "Özel servis", 5),
+  new MaintenanceLog("02.07.2026", "Ford Focus 1.5 TDCi", "Ön takım kontrolü", "Salıncak burcu ve rot ayarı", 3650, "Bağımsız servis", 6),
+  new MaintenanceLog("14.06.2026", "Opel Astra 1.4 Turbo", "Soğutma sistemi", "Antifriz yenileme ve kaçak kontrolü", 2200, "Özel servis", 7),
+  new MaintenanceLog("30.05.2026", "Hyundai i20 1.4 MPI", "Lastik ve fren kontrolü", "Balans, rotasyon ve fren ölçümü", 900, "Lastik servisi", 8),
+  new MaintenanceLog("16.05.2026", "Renault Megane 1.5 dCi", "Yakıt filtresi değişimi", "Dizel yakıt filtresi ve hava alma", 1850, "Bağımsız servis", 9)
 ];
 
 export const guides = [
