@@ -2,7 +2,7 @@
 <nav class="vehicle-breadcrumb" aria-label="Sayfa yolu"><a href="/">Ana sayfa</a><span aria-hidden="true">/</span><a href="/Vehicle/Catalog">Araç kataloğu</a><span aria-hidden="true">/</span><span aria-current="page"><%= vehicle.brand %> <%= vehicle.model %></span></nav>
 <section class="vehicle-heading" aria-labelledby="vehicle-title">
     <div><p class="eyebrow">PITSTOP / MODEL REHBERİ</p><h1 id="vehicle-title"><%= vehicle.brand %> <%= vehicle.model %></h1><p class="vehicle-heading__engine"><%= vehicle.engine %></p></div>
-    <div class="vehicle-heading__meta"><%- include('../components/badge', { label: vehicle.year + ' model', tone: 'accent' }) %><%- include('../components/badge', { label: vehicle.fuel }) %></div>
+    <div class="vehicle-heading__meta"><%- include('../components/badge', { label: vehicle.year + ' model', tone: 'accent' }) %><%- include('../components/badge', { label: vehicle.fuel }) %><!-- İncelenen aracı başka bir modelle kıyaslama butonu --><a class="button button--secondary button--sm vehicle-compare-link" href="/Vehicle/Compare?v1=<%= encodeURIComponent(vehicle.brand + ' ' + vehicle.model) %>">⚖️ Kıyasla</a></div>
 </section>
 <section class="vehicle-overview" aria-labelledby="spec-title">
     <div class="vehicle-spec-panel"><p class="eyebrow">01 / TEKNİK ÖZET</p><h2 id="spec-title">Temel bilgiler, bir bakışta.</h2><dl class="vehicle-spec-grid">

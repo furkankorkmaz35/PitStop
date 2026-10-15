@@ -19,10 +19,10 @@
         <div><p class="eyebrow">İŞLEM DÖKÜMÜ</p><h2 id="logs-title">Bakım kayıtları</h2></div>
         <%- include('../components/badge', { label: 'Örnek veriler', tone: 'accent' }) %>
     </div>
-    <p class="muted" id="logs-help">Tarih, araç ve işlem bazında tüm detaylar. Küçük ekranlarda tabloyu yatay kaydırabilirsin.</p>
+    <p class="muted" id="logs-help">Tarih, araç ve işlem bazında tüm detaylar. Her kaydın resmi bakım raporunu PDF olarak görüntüleyebilir veya indirebilirsin.</p>
     <div class="table-wrap maintenance-table" role="region" aria-label="Bakım kayıtları tablosu" aria-describedby="logs-help" tabindex="0">
         <table>
-            <thead><tr><th scope="col">Tarih</th><th scope="col">Araç</th><th scope="col">İşlem / Parça</th><th scope="col">Servis</th><th scope="col">Maliyet</th></tr></thead>
+            <thead><tr><th scope="col">Tarih</th><th scope="col">Araç</th><th scope="col">İşlem / Parça</th><th scope="col">Servis</th><th scope="col">Maliyet</th><th scope="col" style="text-align: right;">Belge</th></tr></thead>
             <tbody>
                 <% logs.forEach(log => { %>
                 <tr>
@@ -31,12 +31,18 @@
                     <td><%= log.operation %><small><%= log.part %></small></td>
                     <td><%= log.service %></td>
                     <td class="maintenance-table__cost"><strong>₺<%= log.cost.toLocaleString('tr-TR') %></strong></td>
+                    <td style="text-align: right;">
+                        <a class="pdf-btn" href="/Maintenance/Logs/<%= log.id %>/pdf" target="_blank" title="<%= log.vehicle %> bakım kaydını PDF olarak çıkart">
+                            <span class="pdf-icon" aria-hidden="true">PDF</span>
+                            <span>Belge Çıkart ↗</span>
+                        </a>
+                    </td>
                 </tr>
                 <% }) %>
-                <% if (!logs.length) { %><tr><td colspan="5">Henüz bakım kaydı bulunmuyor.</td></tr><% } %>
+                <% if (!logs.length) { %><tr><td colspan="6">Henüz bakım kaydı bulunmuyor.</td></tr><% } %>
             </tbody>
         </table>
     </div>
-    <p class="muted">Görünen kayıtlar örnek amaçlıdır. Bu aşamada kayıt ekleme veya düzenleme özelliği bulunmuyor.</p>
+    <p class="muted">Görünen kayıtlar örnek amaçlıdır. Her kayıt için oluşturulan PDF belgesi resmi servis raporu formatında hazırlanmaktadır.</p>
 </section>
 <%- include('../partials/footer') %>
