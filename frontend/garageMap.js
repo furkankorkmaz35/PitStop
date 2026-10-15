@@ -3,17 +3,67 @@
  * PitStop - İnteraktif Servis Haritası Modülü (Leaflet.js + OpenStreetMap)
  * ==============================================================================
  * İleri Web Programlama Dersi Kapsamında Uygulanan Teknikler:
- * 1. Web GIS & Harita Entegrasyonu: Açık kaynaklı Leaflet.js ve CartoDB Dark Matter katmanı
+ * 1. Web GIS & Harita Entegrasyonu: %100 açık kaynaklı ve API anahtarı istemeyen resmi OpenStreetMap katmanı
  * 2. Geo-Marker & Özel Pinleme (Custom HTML Icon): Otomotiv temalı şık turuncu pinler
- * 3. Harita ve Liste İki Yönlü Etkileşimi (Two-way Binding):
- *    - Haritada pine tıklanınca popup açılır ve "Sayfada Gör" ile ilgili karta kayar.
- *    - Karttaki "Haritada Gör 📍" butonuna tıklanınca harita o konuma uçar (flyTo) ve popup açılır.
- * 4. Şehir Hızlı Odaklanma (Spatial View Navigation): İstanbul, Ankara, İzmir vb. şehirlere
- *    pürüzsüz animasyonla kamera geçişi.
- * 5. Dinamik Sınır Hesaplama (FitBounds): Gösterilen servislerin tamamını ekrana sığdırma.
+ * 3. Garantili 60FPS Pürüzsüz Sayfa Kaydırma (Custom RequestAnimationFrame Smooth Scroll):
+ *    Tarayıcıların 'scrollIntoView' metodundaki anlık ışınlanma (teleport/snap) sorununu
+ *    ortadan kaldıran kübik bezier (easeInOutCubic) matematiksel kaydırma algoritması.
+ * 4. İki Yönlü Sinematik Etkileşim (Two-Way Sequential Binding):
+ *    - Haritada pine tıklanınca sayfa karta pürüzsüzce kayar, kart parlar ve detaylar açılır.
+ *    - Karttaki "Haritada Gör 📍" butonuna basılınca sayfa haritaya kayar, ardından kamera
+ *      servis koordinatlarına zarifçe süzülür (flyTo) ve iniş anında popup açılır.
+ * 5. Şehir Hızlı Odaklanma (Spatial View Navigation): Şehirlere pürüzsüz kamera uçuşu.
  */
 
 import L from 'leaflet';
+
+/**
+ * Özel Pürüzsüz Sayfa Kaydırma Motoru (Custom 60FPS Easing Scroll):
+ * - Neden Yapıldı? Bazı tarayıcılarda 'scrollIntoView({ behavior: 'smooth' })' anlık
+ *   ışınlanma (teleport) yapabilir veya diğer animasyonlarla çakışabilir.
+ * - Bu fonksiyon, window.requestAnimationFrame ve kübik bezier eğrisi (easeInOutCubic)
+ *   kullanarak sayfayı piksel piksel, yağ gibi kaydırır ve bitiş anında callback çalıştırır.
+ */
+function smoothScrollTo(element, offset = 30, duration = 650, callback = null) {
+  if (!element) return;
+  const startY = window.pageYOffset || document.documentElement.scrollTop;
+  const elementRect = element.getBoundingClientRect();
+  const targetY = Math.max(0, elementRect.top + startY - offset);
+  const distance = targetY - startY;
+
+  // Zaten o konumdaysak doğrudan callback'i tetikle
+  if (Math.abs(distance) < 8) {
+    if (typeof callback === 'function') callback();
+    return;
+  }
+
+  let startTime = null;
+
+  // Kübik pürüzsüz hızlanma ve yavaşlama eğrisi
+  function easeInOutCubic(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  function step(currentTime) {
+    if (!startTime) startTime = currentTime;
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const ease = easeInOutCubic(progress);
+
+    window.scrollTo(0, startY + (distance * ease));
+
+    if (progress < 1) {
+      window.requestAnimationFrame(step);
+    } else {
+      window.scrollTo(0, targetY);
+      if (typeof callback === 'function') {
+        callback();
+      }
+    }
+  }
+
+  window.requestAnimationFrame(step);
+}
 
 /**
  * Şehir merkezleri koordinat sözlüğü (Hızlı odaklanma butonları için)
@@ -73,7 +123,7 @@ function createPopupContent(garage) {
  */
 export function initGarageMap() {
   const mapElement = document.getElementById('garage-map');
-  if (!mapElement) return; // Sayfada harita alanı yoksa çalışma
+  if (!mapElement) return;
 
   // 1. Şablondan aktarılan servis verilerini oku
   let garagesData = [];
@@ -94,16 +144,14 @@ export function initGarageMap() {
   const map = L.map('garage-map', {
     center: [39.0, 35.2],
     zoom: 6,
-    scrollWheelZoom: false, // Sayfa kaydırma sırasında kazara yakınlaşmayı önler
+    scrollWheelZoom: false,
     attributionControl: true
   });
 
   /**
    * 3. Harita Katmanı (Tile Layer):
-   * - Kesinlikle hiçbir API anahtarı (API Key), hesap veya kredi kartı gerektirmeyen
-   *   %100 açık kaynaklı ve ücretsiz resmi OpenStreetMap (OSM) katmanı.
-   * - Koyu tema dönüşümü CSS filtresi ile istemcide yapılır; böylece hiçbir zaman
-   *   API limitlerine veya anahtar zorunluluğuna takılmaz.
+   * %100 açık kaynaklı ve API anahtarı istemeyen resmi OpenStreetMap (OSM) katmanı.
+   * review.css içindeki CSS invert/hue-rotate filtreleri ile PitStop koyu temasına uyarlandı.
    */
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -126,7 +174,7 @@ export function initGarageMap() {
     }
   });
 
-  // 5. Eğer tek şehir filtrelenmişse veya az pin varsa haritayı o pinlere sığdır
+  // 5. Filtreli görünümde haritayı pin sınırlarına sığdır
   if (latLngs.length === 1) {
     map.setView(latLngs[0], 12);
   } else if (latLngs.length > 1 && latLngs.length < 8) {
@@ -146,7 +194,7 @@ export function initGarageMap() {
 
       if (cityConfig) {
         map.flyTo(cityConfig.center, cityConfig.zoom, {
-          duration: 1.2,
+          duration: 1.4,
           easeLinearity: 0.25
         });
       }
@@ -155,10 +203,9 @@ export function initGarageMap() {
 
   /**
    * 7. Haritadan Karta Geçiş (Harita -> Liste İki Yönlü Bağlantısı):
-   * - Harita popup'ındaki "Sayfadaki Karta Git" butonuna basıldığında sayfa sarsılmadan,
-   *   pürüzsüzce (smooth scroll) ilgili karta kayar.
-   * - Sayfa karta vardıktan sonra (500ms gecikme ile) servis detay akordeonu açılır ve
-   *   kart turuncu neon çerçeve ile kullanıcının dikkatini çeker.
+   * - Harita popup'ındaki "Sayfadaki Karta Git" butonuna basıldığında custom 60FPS
+   *   smoothScrollTo motoru ile sayfa ışınlanmadan, akıcı bir şekilde karta kayar.
+   * - Kartın hizasına ulaştığında turuncu çerçeve parlar ve detay akordeonu açılır.
    */
   map.on('popupopen', (e) => {
     const popupNode = e.popup.getElement();
@@ -172,18 +219,14 @@ export function initGarageMap() {
         for (const card of cards) {
           const title = card.querySelector('h3');
           if (title && title.textContent.trim() === garageName.trim()) {
-            // 1. Sayfayı yumuşak bir şekilde ilgili servis kartının ortasına kaydır
-            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-            // 2. Sayfa kayması tamamlandığında kartı vurgula ve detayları aç (Sıralı animasyon)
-            setTimeout(() => {
+            // Sayfayı karta 650ms kübik eğri ile kaydır
+            smoothScrollTo(card, 70, 650, () => {
               card.classList.add('garage-card--highlight');
               const details = card.querySelector('.garage-card__details');
               if (details) details.open = true;
-            }, 450);
 
-            // Vurguyu 2.5 saniye sonra kaldır
-            setTimeout(() => card.classList.remove('garage-card--highlight'), 3000);
+              setTimeout(() => card.classList.remove('garage-card--highlight'), 2800);
+            });
             break;
           }
         }
@@ -194,16 +237,10 @@ export function initGarageMap() {
   /**
    * 8. Karttan Haritaya Geçiş (Liste -> Harita İki Yönlü Bağlantısı):
    * ==========================================================================
-   * Pürüzsüz ve Sinematik Geçiş Mühendisliği (Chained Smooth Animation):
-   * - Problem: Sayfa yukarı kayarken aynı anda haritanın uçması gözü yoran, sarsıntılı
-   *   ve kaotik bir animasyona yol açar.
-   * - Çözüm (2 Aşamalı Sıralı Geçiş):
-   *   Adım 1: Kullanıcı butona bastığında önce sayfa yumuşakça harita alanına kaydırılır.
-   *   Adım 2: Kullanıcının gözü haritaya ulaştıktan sonra (~400ms sonra), Leaflet'in
-   *          'flyTo' fonksiyonu optimize edilmiş süre (1.6s) ve yumuşak kubik yavaşlama
-   *          (easeLinearity: 0.2) ile servisin pinine doğru zarifçe süzülür.
-   *   Adım 3: Uçuş tamamen bittiğinde ('moveend' olay dinleyicisi ile), popup tam
-   *          zamanında ve pürüzsüzce açılır.
+   * Işınlanmayı Önleyen 2 Aşamalı Sinematik Sıralama:
+   * 1. Aşama: Sayfa önce harita alanına 600ms boyunca pürüzsüzce kayar.
+   * 2. Aşama: Sayfa haritaya yerleşince Leaflet kamerasını yumuşakça (1.5s) servise uçurur.
+   * 3. Aşama: Kamera servisin üzerinde durduğu an popup açılır.
    */
   const locateButtons = document.querySelectorAll('.garage-card__locate-btn');
   locateButtons.forEach(btn => {
@@ -213,28 +250,24 @@ export function initGarageMap() {
       const marker = markerMap.get(garageName);
 
       if (marker) {
-        // 1. Aşama: Sayfayı harita konteynerine yumuşakça kaydır
         const mapContainer = document.getElementById('garageMapWrapper');
-        if (mapContainer) {
-          mapContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
 
-        // 2. Aşama: Sayfa haritaya ulaştıktan sonra harita kamerasını pürüzsüzce uçur
-        setTimeout(() => {
+        // 1. Aşama: Sayfayı harita konteynerine 600ms pürüzsüzce kaydır
+        smoothScrollTo(mapContainer, 24, 600, () => {
+          // 2. Aşama: Sayfa haritaya ulaştıktan sonra harita kamerasını zarifçe uçur
           const latLng = marker.getLatLng();
 
-          // Rastgele bir setTimeout yerine Leaflet'in 'moveend' olayını dinle
+          // Kamera tam yerine oturduğunda popup'ı aç
           map.once('moveend', () => {
-            // Kamera yerine oturduğunda popup'ı aç
             marker.openPopup();
           });
 
-          // Sinematik, sarsıntısız ve yumuşak uçuş (zoom: 13, süre: 1.6s)
-          map.flyTo(latLng, 13, {
-            duration: 1.6,
-            easeLinearity: 0.2
+          // Sinematik, sarsıntısız ve yumuşak uçuş
+          map.flyTo(latLng, 14, {
+            duration: 1.5,
+            easeLinearity: 0.25
           });
-        }, 380);
+        });
       }
     });
   });
