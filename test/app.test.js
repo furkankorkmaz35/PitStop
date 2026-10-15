@@ -189,3 +189,22 @@ test('maintenance log generates individual downloadable PDF document', async () 
   const notFound = await fetch(baseUrl + '/Maintenance/Logs/999/pdf', { redirect: 'manual' });
   assert.ok([404, 302].includes(notFound.status));
 });
+
+test('vehicle comparison renders default vehicles and calculates side-by-side differences', async () => {
+  const html = await page('/Vehicle/Compare');
+  assert.ok(html.includes('Toyota Corolla'));
+  assert.ok(html.includes('Volkswagen Golf'));
+  assert.ok(html.includes('132 bg'));
+  assert.ok(html.includes('105 bg'));
+  assert.ok(html.includes('+27 bg daha güçlü'));
+  assert.ok(html.includes('Performans &amp; Çekiş') || html.includes('Performans & Çekiş'));
+  assert.ok(html.includes('action="/Vehicle/Compare"'));
+});
+
+test('vehicle comparison accepts query parameters for custom vehicles', async () => {
+  const html = await page('/Vehicle/Compare?v1=BMW%203%20Serisi&v2=Honda%20Civic');
+  assert.ok(html.includes('BMW 3 Serisi'));
+  assert.ok(html.includes('Honda Civic'));
+  assert.ok(html.includes('184 bg'));
+  assert.ok(html.includes('+59 bg daha güçlü') || html.includes('BMW 3 Serisi vs Honda Civic'));
+});

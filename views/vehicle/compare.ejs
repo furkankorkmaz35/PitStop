@@ -1,0 +1,277 @@
+<%- include('../partials/header') %>
+<nav class="vehicle-breadcrumb" aria-label="Sayfa yolu">
+    <a href="/">Ana sayfa</a>
+    <span aria-hidden="true">/</span>
+    <a href="/Vehicle/Catalog">Araç kataloğu</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">Karşılaştırma</span>
+</nav>
+
+<section class="compare-heading" aria-labelledby="compare-title">
+    <div>
+        <p class="eyebrow">PITSTOP / MODEL KARŞILAŞTIRMA</p>
+        <h1 id="compare-title">İki Aracı <em>Yan Yana</em> Kıyasla.</h1>
+        <p class="muted">Motor gücü, yakıt tüketim profili, kronik riskler ve bakım geçmişini yan yana karşılaştırarak en doğru kararı verin.</p>
+    </div>
+</section>
+
+<section class="compare-selector-section" aria-label="Araç seçimi">
+    <form method="get" action="/Vehicle/Compare" class="compare-selector-form">
+        <div class="compare-select-wrapper">
+            <label for="select-v1" class="field__label">1. Araç</label>
+            <select id="select-v1" name="v1" class="input compare-select" onchange="this.form.submit()">
+                <% vehicles.forEach(v => { 
+                    const key = v.brand + ' ' + v.model;
+                    const selected = key === v1Key;
+                %>
+                    <option value="<%= key %>" <%= selected ? 'selected' : '' %>><%= v.brand %> <%= v.model %> (<%= v.engine %>, <%= v.year %>)</option>
+                <% }) %>
+            </select>
+        </div>
+
+        <div class="compare-vs-badge" aria-hidden="true">VS</div>
+
+        <div class="compare-select-wrapper">
+            <label for="select-v2" class="field__label">2. Araç</label>
+            <select id="select-v2" name="v2" class="input compare-select" onchange="this.form.submit()">
+                <% vehicles.forEach(v => { 
+                    const key = v.brand + ' ' + v.model;
+                    const selected = key === v2Key;
+                %>
+                    <option value="<%= key %>" <%= selected ? 'selected' : '' %>><%= v.brand %> <%= v.model %> (<%= v.engine %>, <%= v.year %>)</option>
+                <% }) %>
+            </select>
+        </div>
+
+        <button type="submit" class="button compare-submit-btn">Karşılaştır</button>
+    </form>
+</section>
+
+<section class="compare-grid-section" aria-labelledby="matrix-title">
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">01 / KARŞILAŞTIRMA TABLOSU</p>
+            <h2 id="matrix-title"><%= vehicle1.brand %> <%= vehicle1.model %> vs <%= vehicle2.brand %> <%= vehicle2.model %></h2>
+        </div>
+        <div class="compare-actions-quick">
+            <a href="/Vehicle/Compare?v1=<%= encodeURIComponent(v2Key) %>&amp;v2=<%= encodeURIComponent(v1Key) %>" class="button button--secondary button--sm">⇄ Araçları Değiştir</a>
+        </div>
+    </div>
+
+    <div class="compare-cards-grid">
+        <!-- Vehicle 1 Card -->
+        <article class="compare-vehicle-card <%= powerDiff > 0 ? 'compare-vehicle-card--highlight' : '' %>">
+            <div class="compare-card-head">
+                <span class="eyebrow"><%= vehicle1.brand %></span>
+                <h3><%= vehicle1.brand %> <%= vehicle1.model %></h3>
+                <p class="compare-card-engine"><%= vehicle1.engine %></p>
+                <div class="compare-card-meta">
+                    <%- include('../components/badge', { label: vehicle1.year + ' Model', tone: 'accent' }) %>
+                    <%- include('../components/badge', { label: vehicle1.fuel }) %>
+                    <%- include('../components/badge', { label: vehicle1.power + ' bg' }) %>
+                </div>
+            </div>
+
+            <dl class="compare-spec-list">
+                <div class="compare-spec-row">
+                    <dt>Motor Tipi</dt>
+                    <dd><%= vehicle1.engine %></dd>
+                </div>
+                <div class="compare-spec-row">
+                    <dt>Maksimum Güç</dt>
+                    <dd>
+                        <strong><%= vehicle1.power %> bg</strong>
+                        <% if (powerDiff > 0) { %>
+                            <span class="compare-pill compare-pill--winner">+<%= powerDiff %> bg daha güçlü</span>
+                        <% } else if (powerDiff < 0) { %>
+                            <span class="compare-pill compare-pill--neutral"><%= powerDiff %> bg</span>
+                        <% } else { %>
+                            <span class="compare-pill compare-pill--neutral">Eşit güç</span>
+                        <% } %>
+                    </dd>
+                </div>
+                <div class="compare-spec-row">
+                    <dt>Yakıt Türü</dt>
+                    <dd><%= vehicle1.fuel %></dd>
+                </div>
+                <div class="compare-spec-row">
+                    <dt>Model Yılı</dt>
+                    <dd>
+                        <%= vehicle1.year %>
+                        <% if (yearDiff > 0) { %>
+                            <span class="compare-pill compare-pill--winner">+<%= yearDiff %> yıl daha yeni</span>
+                        <% } %>
+                    </dd>
+                </div>
+                <div class="compare-spec-row">
+                    <dt>Kronik / Dikkat Noktası</dt>
+                    <dd class="compare-spec-issue">
+                        <div class="compare-issue-badge">
+                            <%- include('../components/badge', { label: 'Risk: ' + vehicle1.issueLevel, tone: vehicle1.issueLevel === 'Düşük' ? 'success' : 'warning' }) %>
+                        </div>
+                        <p><%= vehicle1.knownIssue %></p>
+                    </dd>
+                </div>
+                <div class="compare-spec-row">
+                    <dt>Bakım Geçmişi &amp; Ortalama Maliyet</dt>
+                    <dd>
+                        <% if (v1Maintenance.hasLogs) { %>
+                            <span class="total">₺<%= v1Maintenance.avgCost.toLocaleString('tr-TR') %></span>
+                            <small class="muted"><%= v1Maintenance.count %> servis kaydı mevcut</small>
+                        <% } else { %>
+                            <span class="total">~₺<%= v1Maintenance.avgCost.toLocaleString('tr-TR') %></span>
+                            <small class="muted">Tahmini periyodik bakım (kayıt yok)</small>
+                        <% } %>
+                    </dd>
+                </div>
+            </dl>
+
+            <div class="compare-card-footer">
+                <a class="arrow" href="/Vehicle/Detail?brand=<%= encodeURIComponent(vehicle1.brand) %>&amp;model=<%= encodeURIComponent(vehicle1.model) %>">
+                    <%= vehicle1.brand %> <%= vehicle1.model %> detay sayfası <span aria-hidden="true">→</span>
+                </a>
+            </div>
+        </article>
+
+        <!-- Vehicle 2 Card -->
+        <article class="compare-vehicle-card <%= powerDiff < 0 ? 'compare-vehicle-card--highlight' : '' %>">
+            <div class="compare-card-head">
+                <span class="eyebrow"><%= vehicle2.brand %></span>
+                <h3><%= vehicle2.brand %> <%= vehicle2.model %></h3>
+                <p class="compare-card-engine"><%= vehicle2.engine %></p>
+                <div class="compare-card-meta">
+                    <%- include('../components/badge', { label: vehicle2.year + ' Model', tone: 'accent' }) %>
+                    <%- include('../components/badge', { label: vehicle2.fuel }) %>
+                    <%- include('../components/badge', { label: vehicle2.power + ' bg' }) %>
+                </div>
+            </div>
+
+            <dl class="compare-spec-list">
+                <div class="compare-spec-row">
+                    <dt>Motor Tipi</dt>
+                    <dd><%= vehicle2.engine %></dd>
+                </div>
+                <div class="compare-spec-row">
+                    <dt>Maksimum Güç</dt>
+                    <dd>
+                        <strong><%= vehicle2.power %> bg</strong>
+                        <% if (powerDiff < 0) { %>
+                            <span class="compare-pill compare-pill--winner">+<%= Math.abs(powerDiff) %> bg daha güçlü</span>
+                        <% } else if (powerDiff > 0) { %>
+                            <span class="compare-pill compare-pill--neutral"><%= -powerDiff %> bg</span>
+                        <% } else { %>
+                            <span class="compare-pill compare-pill--neutral">Eşit güç</span>
+                        <% } %>
+                    </dd>
+                </div>
+                <div class="compare-spec-row">
+                    <dt>Yakıt Türü</dt>
+                    <dd><%= vehicle2.fuel %></dd>
+                </div>
+                <div class="compare-spec-row">
+                    <dt>Model Yılı</dt>
+                    <dd>
+                        <%= vehicle2.year %>
+                        <% if (yearDiff < 0) { %>
+                            <span class="compare-pill compare-pill--winner">+<%= Math.abs(yearDiff) %> yıl daha yeni</span>
+                        <% } %>
+                    </dd>
+                </div>
+                <div class="compare-spec-row">
+                    <dt>Kronik / Dikkat Noktası</dt>
+                    <dd class="compare-spec-issue">
+                        <div class="compare-issue-badge">
+                            <%- include('../components/badge', { label: 'Risk: ' + vehicle2.issueLevel, tone: vehicle2.issueLevel === 'Düşük' ? 'success' : 'warning' }) %>
+                        </div>
+                        <p><%= vehicle2.knownIssue %></p>
+                    </dd>
+                </div>
+                <div class="compare-spec-row">
+                    <dt>Bakım Geçmişi &amp; Ortalama Maliyet</dt>
+                    <dd>
+                        <% if (v2Maintenance.hasLogs) { %>
+                            <span class="total">₺<%= v2Maintenance.avgCost.toLocaleString('tr-TR') %></span>
+                            <small class="muted"><%= v2Maintenance.count %> servis kaydı mevcut</small>
+                        <% } else { %>
+                            <span class="total">~₺<%= v2Maintenance.avgCost.toLocaleString('tr-TR') %></span>
+                            <small class="muted">Tahmini periyodik bakım (kayıt yok)</small>
+                        <% } %>
+                    </dd>
+                </div>
+            </dl>
+
+            <div class="compare-card-footer">
+                <a class="arrow" href="/Vehicle/Detail?brand=<%= encodeURIComponent(vehicle2.brand) %>&amp;model=<%= encodeURIComponent(vehicle2.model) %>">
+                    <%= vehicle2.brand %> <%= vehicle2.model %> detay sayfası <span aria-hidden="true">→</span>
+                </a>
+            </div>
+        </article>
+    </div>
+</section>
+
+<!-- Comparison Insights -->
+<section class="section" aria-labelledby="insights-title">
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">02 / KIYASLAMA ANALİZİ &amp; TAVSİYELER</p>
+            <h2 id="insights-title">Hangi araç senin kullanımına daha uygun?</h2>
+        </div>
+    </div>
+    
+    <div class="compare-insights-grid">
+        <div class="compare-insight-card">
+            <span class="compare-insight-number">01</span>
+            <h3>Performans &amp; Çekiş</h3>
+            <p>
+                <% if (powerDiff > 0) { %>
+                    <strong><%= vehicle1.brand %> <%= vehicle1.model %></strong>, <%= vehicle1.power %> beygirlik gücüyle rakibine göre <%= powerDiff %> bg daha avantajlı. Özellikle sollamalarda ve yüklü seyahatlerde daha seri ivmelenme sağlar.
+                <% } else if (powerDiff < 0) { %>
+                    <strong><%= vehicle2.brand %> <%= vehicle2.model %></strong>, <%= vehicle2.power %> beygirlik gücüyle rakibine göre <%= Math.abs(powerDiff) %> bg daha yüksek performans sunar. Hızlanma tepkileri daha atiktir.
+                <% } else { %>
+                    Her iki model de <%= vehicle1.power %> beygir gücündedir. Günlük kullanım ve yol tutuş dengesi açısından birbirine çok yakın bir sürüş karakteristiği sergiler.
+                <% } %>
+            </p>
+        </div>
+
+        <div class="compare-insight-card">
+            <span class="compare-insight-number">02</span>
+            <h3>Kullanım ve Yakıt Karakteri</h3>
+            <p>
+                <% if (vehicle1.fuel === vehicle2.fuel) { %>
+                    İki model de <strong><%= vehicle1.fuel %></strong> yakıt türüne sahiptir. Bu segmentteki tüketim değerleri kullanım tarzına ve bakım düzenine bağlı olarak birbirine oldukça paralel seyredecektir.
+                <% } else { %>
+                    <%= vehicle1.fuel === 'Dizel' ? vehicle1.brand : vehicle2.brand %>, dizel motoruyla uzun yol ve otoyol sürüşlerinde yüksek tork ve yakıt tasarrufu sağlar. Benzinli model ise kısa mesafe ve dur-kalk trafiğinde kurum ve emisyon riskini en aza indirir.
+                <% } %>
+            </p>
+        </div>
+
+        <div class="compare-insight-card">
+            <span class="compare-insight-number">03</span>
+            <h3>Bakım ve Risk Değerlendirmesi</h3>
+            <p>
+                <% if (vehicle1.issueLevel === 'Düşük' && vehicle2.issueLevel !== 'Düşük') { %>
+                    <strong><%= vehicle1.brand %> <%= vehicle1.model %></strong> daha düşük risk profiliyle dikkat çekerken, <%= vehicle2.brand %> için alım öncesi kronik noktaların servis kontrolünden geçirilmesi önerilir.
+                <% } else if (vehicle2.issueLevel === 'Düşük' && vehicle1.issueLevel !== 'Düşük') { %>
+                    <strong><%= vehicle2.brand %> <%= vehicle2.model %></strong> görece daha az risk taşırken, <%= vehicle1.brand %> için belirtilen mekanik detayların ekspertizde titizlikle incelenmesi gerekir.
+                <% } else { %>
+                    Her iki modelin risk seviyesi <strong><%= vehicle1.issueLevel %></strong> olarak sınıflandırılmıştır. Periyodik bakımların aksatılmaması aracın uzun ömürlülüğü için belirleyici faktördür.
+                <% } %>
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Additional Navigation CTA -->
+<section class="vehicle-community section" aria-labelledby="cta-title">
+    <div>
+        <p class="eyebrow">KEŞFE DEVAM ET</p>
+        <h2 id="cta-title">Katalogdaki Diğer Araçlara Göz Atın</h2>
+        <p>14 farklı otomobil modelini teknik detayları ve kronik sorun uyarılarıyla kataloğumuzda inceleyebilir veya yeni bir kıyaslama yapabilirsiniz.</p>
+    </div>
+    <div class="compare-cta-buttons">
+        <%- include('../components/linkButton', { href: '/Vehicle/Catalog', label: 'Tüm Kataloğu Gör' }) %>
+        <%- include('../components/linkButton', { href: '/Maintenance/Logs', label: 'Bakım Kayıtlarını İncele', variant: 'secondary' }) %>
+    </div>
+</section>
+
+<%- include('../partials/footer') %>

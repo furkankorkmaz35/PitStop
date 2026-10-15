@@ -27,7 +27,7 @@
             <% const path = typeof currentPath === 'string' ? currentPath : '/';
                const links = [
                  { href: '/', label: 'Ana Sayfa', active: ['/', '/home', '/home/index'].includes(path) },
-                 { href: '/Vehicle/Catalog', label: 'Araç Kataloğu', active: path.startsWith('/vehicle'), parent: path === '/vehicle/detail' },
+                 { href: '/Vehicle/Catalog', label: 'Araç Kataloğu', active: path.startsWith('/vehicle'), parent: ['/vehicle/detail', '/vehicle/compare'].includes(path) },
                  { href: '/Maintenance/Logs', label: 'Bakım Kayıtları', active: ['/maintenance', '/maintenance/logs'].includes(path) },
                  { href: '/Maintenance/Guide', label: 'DIY Rehber', active: path === '/maintenance/guide' },
                  { href: '/Review/PartReviews', label: 'Parça İnceleme', active: ['/review', '/review/partreviews'].includes(path) },
