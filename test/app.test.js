@@ -212,3 +212,30 @@ test('vehicle comparison accepts query parameters for custom vehicles', async ()
   assert.ok(html.includes('184 bg'));
   assert.ok(html.includes('+59 bg daha güçlü') || html.includes('BMW 3 Serisi vs Honda Civic'));
 });
+
+// İleri Web Programlama API Testi:
+// /api/vehicles RESTful JSON uç noktasının doğru başlıklarla (application/json),
+// doğru filtreleme mantığıyla ve JSON veri formatıyla çalıştığını doğrular.
+test('API /api/vehicles returns filtered json data with proper headers', async () => {
+  // 1. Tüm araçlar sorgusu
+  const allResponse = await fetch(baseUrl + '/api/vehicles');
+  assert.equal(allResponse.status, 200);
+  assert.match(allResponse.headers.get('content-type'), /application\/json/);
+  const allData = await allResponse.json();
+  assert.equal(allData.success, true);
+  assert.equal(allData.count, 14);
+  assert.equal(allData.vehicles.length, 14);
+
+  // 2. Filtreli sorgu (Toyota)
+  const toyotaResponse = await fetch(baseUrl + '/api/vehicles?brand=Toyota');
+  const toyotaData = await toyotaResponse.json();
+  assert.equal(toyotaData.count, 1);
+  assert.equal(toyotaData.vehicles[0].brand, 'Toyota');
+  assert.equal(toyotaData.vehicles[0].model, 'Corolla');
+
+  // 3. Eşleşmeyen sorgu (0 sonuç)
+  const emptyResponse = await fetch(baseUrl + '/api/vehicles?brand=OlmayanMarka');
+  const emptyData = await emptyResponse.json();
+  assert.equal(emptyData.count, 0);
+  assert.equal(emptyData.vehicles.length, 0);
+});

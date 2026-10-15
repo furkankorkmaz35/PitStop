@@ -103,3 +103,30 @@ export function compare(req, res) {
     v2Key: `${vehicle2.brand} ${vehicle2.model}`
   });
 }
+
+/**
+ * RESTful JSON API Uç Noktası (/api/vehicles):
+ * - İleri Web Programlama: İstemci taraflı canlı AJAX / Fetch isteklerine yanıt verir.
+ * - Kullanıcı klavyeden marka veya motor yazdıkça sayfa yenilenmeden filtrelenmiş JSON veri döner.
+ * - Parametreler: 'brand' (Marka adı filtresi), 'engine' (Motor adı filtresi).
+ * - Büyük/küçük harf duyarsız (case-insensitive) ve boşluklardan arındırılmış (trimmed) arama uygular.
+ * - Yanıt başlığında Content-Type: application/json döner.
+ */
+export function apiVehicles(req, res) {
+  const brand = typeof req.query.brand === 'string' ? req.query.brand : '';
+  const engine = typeof req.query.engine === 'string' ? req.query.engine : '';
+  const matches = (value, filter) => !filter.trim() || value.toLowerCase().includes(filter.toLowerCase().trim());
+
+  // Kriterlere uyan araçları filtrele
+  const filteredVehicles = vehicles.filter(vehicle =>
+    matches(vehicle.brand, brand) && matches(vehicle.engine, engine)
+  );
+
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.json({
+    success: true,
+    count: filteredVehicles.length,
+    filters: { brand, engine },
+    vehicles: filteredVehicles
+  });
+}

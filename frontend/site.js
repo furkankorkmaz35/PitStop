@@ -1,3 +1,4 @@
+import { initCatalogLiveSearch } from './catalogLiveSearch.js';
 // Shared navigation enhancement; normal links and server-rendered MVC pages stay intact.
 const header = document.querySelector('.top');
 const toggle = header?.querySelector('.menu-toggle');
@@ -31,3 +32,6 @@ if (header && toggle && nav) {
   addEventListener('pageshow', reset);
   reset();
 }
+
+// İleri Web Programlama: Katalog sayfasında sayfa yenilenmeden canlı arama / filtrelemeyi başlat
+initCatalogLiveSearch();
