@@ -1,9 +1,14 @@
 <%- include('../partials/header') %>
+<!-- Leaflet.js Açık Kaynak Harita CSS Stilleri -->
+<link rel="stylesheet" href="/build/leaflet/leaflet.css" />
+
 <section class="review-heading" aria-labelledby="garages-title">
     <p class="eyebrow">USTA VE SERVİS REHBERİ</p>
     <h1 id="garages-title">Aracını bilen<br>servisi keşfet.</h1>
     <p>Şehir, marka ve uzmanlık alanına göre örnek servis kayıtlarını karşılaştır. Hizmet kapsamı, çalışma saatleri ve temsili fiyat seviyesini incele.</p>
 </section>
+
+<!-- Arama ve Filtreleme Formu -->
 <form action="/Review/GarageFinder" method="get" class="review-filter garage-filter" role="search" aria-label="Servis ara">
     <%- include('../components/field', { id: 'city', name: 'city', label: 'Şehir', placeholder: 'Örn. İstanbul', value: filters.city }) %>
     <%- include('../components/field', { id: 'brand', name: 'brand', label: 'Araç markası', placeholder: 'Örn. Toyota', value: filters.brand }) %>
@@ -11,6 +16,33 @@
     <%- include('../components/button', { label: 'Servis ara', buttonType: 'submit' }) %>
     <% if (hasFilter) { %><%- include('../components/linkButton', { href: '/Review/GarageFinder', label: 'Temizle', variant: 'secondary' }) %><% } %>
 </form>
+
+<!-- İleri Web Programlama: İnteraktif Leaflet.js Harita Bölümü -->
+<section class="garage-map-wrapper" id="garageMapWrapper" aria-label="İnteraktif Servis Haritası">
+    <div class="garage-map-head">
+        <div>
+            <p class="eyebrow">İNTERAKTİF HARİTA (LEAFLET.JS &amp; OPENSTREETMAP)</p>
+            <h3>Türkiye Geneli Servis Lokasyonları</h3>
+        </div>
+        <!-- Şehir bazlı hızlı odaklanma navigasyonu -->
+        <div class="garage-map-city-nav" role="toolbar" aria-label="Harita Şehir Filtreleri">
+            <button type="button" class="map-city-btn is-active" data-city="all">Tümü</button>
+            <button type="button" class="map-city-btn" data-city="istanbul">İstanbul</button>
+            <button type="button" class="map-city-btn" data-city="ankara">Ankara</button>
+            <button type="button" class="map-city-btn" data-city="izmir">İzmir</button>
+            <button type="button" class="map-city-btn" data-city="bursa">Bursa</button>
+            <button type="button" class="map-city-btn" data-city="antalya">Antalya</button>
+        </div>
+    </div>
+
+    <!-- Haritanın bağlandığı ve verilerin JSON aktarıldığı konteyner -->
+    <div id="garage-map" class="garage-map" data-garages='<%- JSON.stringify(garagesWithCoords) %>'></div>
+    <div class="garage-map-footer">
+        <p class="garage-map-hint">💡 <strong>İpucu:</strong> Haritadaki pinlere tıklayarak servis özetini görebilir veya aşağıdaki kartlardan <em>"Haritada Gör 📍"</em> butonuna basarak doğrudan konuma uçabilirsiniz.</p>
+    </div>
+</section>
+
+<!-- Servis Listesi ve Arama Sonuçları -->
 <section class="section" aria-labelledby="results-title">
     <div class="section-head">
         <div><p class="eyebrow"><%= hasFilter ? 'ARAMA SONUÇLARI' : 'ÖRNEK LİSTE' %></p><h2 id="results-title">Servis rehberi</h2></div>
@@ -31,4 +63,7 @@
     <% } %>
     <p class="muted">İşletmeler, adresler, saatler, puanlar ve fiyat seviyeleri temsili veridir; gerçek servis önerisi veya doğrulanmış iletişim bilgisi değildir.</p>
 </section>
+
+<!-- Harita modülünü asenkron yükle -->
+<script type="module" src="/build/garageMap.js"></script>
 <%- include('../partials/footer') %>

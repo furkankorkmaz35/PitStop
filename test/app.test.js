@@ -239,3 +239,34 @@ test('API /api/vehicles returns filtered json data with proper headers', async (
   assert.equal(emptyData.count, 0);
   assert.equal(emptyData.vehicles.length, 0);
 });
+
+// İleri Web Programlama Harita & Coğrafi Veri Testi:
+// /api/garages RESTful JSON uç noktasının enlem ve boylam (lat/lng) koordinatlarıyla,
+// doğru coğrafi verileri ve şehir filtrelemesini sağladığını doğrular.
+test('API /api/garages returns geo-located garage data with coordinates', async () => {
+  // 1. Tüm servisler ve koordinat doğrulaması
+  const response = await fetch(baseUrl + '/api/garages');
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get('content-type'), /application\/json/);
+  const data = await response.json();
+  assert.equal(data.success, true);
+  assert.equal(data.count, 9);
+  assert.ok(typeof data.garages[0].lat === 'number');
+  assert.ok(typeof data.garages[0].lng === 'number');
+
+  // 2. Şehir filtresi doğrulaması (Ankara)
+  const ankaraResponse = await fetch(baseUrl + '/api/garages?city=ankara');
+  const ankaraData = await ankaraResponse.json();
+  assert.equal(ankaraData.count, 2);
+  assert.ok(ankaraData.garages.every(g => g.city === 'Ankara'));
+});
+
+test('garage finder page embeds interactive map container and assets', async () => {
+  const html = await page('/Review/GarageFinder');
+  assert.ok(html.includes('id="garage-map"'));
+  assert.ok(html.includes('id="garageMapWrapper"'));
+  assert.ok(html.includes('/build/leaflet/leaflet.css'));
+  assert.ok(html.includes('/build/garageMap.js'));
+  assert.ok(html.includes('data-city="istanbul"'));
+  assert.ok(html.includes('Haritada Gör 📍'));
+});
