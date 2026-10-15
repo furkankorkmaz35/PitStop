@@ -190,6 +190,8 @@ test('maintenance log generates individual downloadable PDF document', async () 
   assert.ok([404, 302].includes(notFound.status));
 });
 
+// Karşılaştırma Testi: Varsayılan araçların (Toyota vs Golf) başarıyla yüklendiğini,
+// güç farkı rozetinin (+27 bg) ve kıyaslama analizlerinin doğru üretildiğini doğrular.
 test('vehicle comparison renders default vehicles and calculates side-by-side differences', async () => {
   const html = await page('/Vehicle/Compare');
   assert.ok(html.includes('Toyota Corolla'));
@@ -201,6 +203,8 @@ test('vehicle comparison renders default vehicles and calculates side-by-side di
   assert.ok(html.includes('action="/Vehicle/Compare"'));
 });
 
+// Karşılaştırma Testi: URL üzerinden özel v1 ve v2 sorgu parametreleri verildiğinde (Örn: BMW 3 Serisi vs Honda Civic)
+// ilgili araçların dinamik olarak eşleşip ekrana yansıtıldığını doğrular.
 test('vehicle comparison accepts query parameters for custom vehicles', async () => {
   const html = await page('/Vehicle/Compare?v1=BMW%203%20Serisi&v2=Honda%20Civic');
   assert.ok(html.includes('BMW 3 Serisi'));

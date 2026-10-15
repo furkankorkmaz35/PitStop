@@ -31,27 +31,37 @@
   .vehicle-community { flex-direction: column; align-items: flex-start; }
 }
 
-/* Vehicle Comparison Feature */
+/* ==========================================================================
+   Araç Karşılaştırma Özelliği Stilleri (/Vehicle/Compare)
+   ========================================================================== */
+/* Katalog başlığı ve karşılaştırma butonu düzeni */
 .catalog-heading__top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px; }
 .catalog-compare-btn { font-size: var(--text-xs); padding: 8px 16px; min-height: 38px; }
+
+/* Araç kartı alt aksiyon alanı ve karşılaştır butonu */
 .vehicle-card__footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: auto; padding-top: 16px; }
 .vehicle-card__compare-link { font-size: var(--text-xs); color: var(--color-muted); text-decoration: none; padding: 6px 10px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); transition: border-color var(--motion-fast), color var(--motion-fast); }
 .vehicle-card__compare-link:hover { color: var(--color-text); border-color: var(--color-accent); }
 .vehicle-compare-link { min-height: 32px; padding: 6px 14px; font-size: var(--text-xs); text-decoration: none; }
 .vehicle-community__actions { display: flex; flex-wrap: wrap; gap: 12px; }
 
+/* Karşılaştırma sayfası başlık ve giriş bölümü */
 .compare-heading { padding: 12px 0 32px; }
 .compare-heading h1 { margin: 16px 0 20px; font-size: clamp(2.25rem, 4.8vw, 3.75rem); letter-spacing: -.045em; }
 .compare-heading em { color: var(--color-accent); font-style: normal; }
 
+/* Araç seçim formu ve açılır menüler */
 .compare-selector-section { padding: 24px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); margin-bottom: 40px; }
 .compare-selector-form { display: flex; align-items: flex-end; gap: 16px; }
 .compare-select-wrapper { flex: 1; display: grid; gap: var(--space-2); min-width: 0; }
 .compare-select { width: 100%; min-height: 48px; padding: 10px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-bg); color: var(--color-text); font-size: var(--text-sm); }
 .compare-select:focus { border-color: var(--color-accent); outline: none; }
+
+/* İki seçim arasındaki merkezi 'VS' görsel rozeti */
 .compare-vs-badge { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; background: var(--color-raised); border: 2px solid var(--color-accent); color: var(--color-accent); font-weight: 800; font-size: var(--text-sm); flex-shrink: 0; margin-bottom: 2px; }
 .compare-submit-btn { flex-shrink: 0; }
 
+/* Kıyaslama kartları ızgarası (Yan yana 2 kolon) */
 .compare-actions-quick { display: flex; align-items: center; }
 .compare-cards-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; margin-top: 24px; }
 .compare-vehicle-card { display: flex; flex-direction: column; padding: 32px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); position: relative; }
@@ -61,6 +71,7 @@
 .compare-card-engine { color: var(--color-muted); font-size: 1.05rem; margin: 0 0 16px; }
 .compare-card-meta { display: flex; flex-wrap: wrap; gap: 8px; }
 
+/* Teknik özellik satırları ve kronik sorun alanı */
 .compare-spec-list { margin: 24px 0 0; display: grid; gap: 0; border-top: 0; }
 .compare-spec-row { display: flex; flex-direction: column; gap: 6px; padding: 18px 0; border-bottom: 1px solid var(--color-border); }
 .compare-spec-row dt { font-size: var(--text-xs); color: var(--color-muted); text-transform: uppercase; letter-spacing: .08em; padding: 0; border: 0; }
@@ -68,12 +79,14 @@
 .compare-spec-issue { display: flex; flex-direction: column !important; align-items: flex-start !important; gap: 8px; }
 .compare-spec-issue p { font-size: var(--text-sm); color: var(--color-muted); margin: 0; line-height: 1.6; }
 
+/* Güç ve model yılı fark rozetleri (+bg, +yıl avantajı) */
 .compare-pill { font-size: var(--text-xs); padding: 4px 10px; border-radius: 20px; font-weight: 500; }
 .compare-pill--winner { background: var(--color-accent-soft); color: var(--color-accent-hover); border: 1px solid #71412e; }
 .compare-pill--neutral { background: var(--color-raised); color: var(--color-muted); border: 1px solid var(--color-border); }
 
 .compare-card-footer { margin-top: auto; padding-top: 24px; }
 
+/* Kıyaslama analiz kartları (01/02/03) */
 .compare-insights-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: 24px; }
 .compare-insight-card { padding: 28px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); display: flex; flex-direction: column; }
 .compare-insight-number { color: var(--color-accent); font-weight: 700; font-size: 1.25rem; margin-bottom: 12px; }
@@ -82,6 +95,7 @@
 
 .compare-cta-buttons { display: flex; flex-wrap: wrap; gap: 12px; flex-shrink: 0; }
 
+/* Mobil ve dar ekran responsive düzenlemeleri */
 @media (max-width: 860px) {
   .catalog-heading__top { flex-direction: column; align-items: flex-start; }
   .compare-selector-form { flex-direction: column; align-items: stretch; }
