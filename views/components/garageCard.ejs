@@ -1,12 +1,20 @@
-<article class="review-card garage-card">
+<article class="review-card garage-card" id="garage-card-<%= encodeURIComponent(garage.name) %>">
     <div class="review-card__meta">
         <%- include('badge', { label: garage.city, tone: 'accent' }) %>
-        <span class="review-score" aria-label="Örnek puan: <%= garage.score %> / 5"><span aria-hidden="true">★</span> <%= garage.score %><small> / 5</small></span>
+        <span class="review-score" aria-label="Örnek puan: <%= garage.score %> / 5"><span aria-hidden="true">★ </span> <%= garage.score %><small> / 5</small></span>
     </div>
     <h3><%= garage.name %></h3>
     <p class="garage-card__summary"><%= garage.specialty %> <span aria-hidden="true">·</span> <%= garage.brands %></p>
+    
+    <!-- Haritada İlgili Pine Odaklanma Butonu -->
+    <div class="garage-card__actions">
+        <button type="button" class="garage-card__locate-btn" data-garage-name="<%= garage.name %>" title="Harita üzerinde bu servise odaklan">
+            Haritada Gör 📍
+        </button>
+    </div>
+
     <details class="garage-card__details">
-        <summary>Detayları gör <span aria-hidden="true">↓</span></summary>
+        <summary>Detayları gör <span aria-hidden="true">▾</span></summary>
         <dl class="review-facts">
             <div><dt>Uzmanlık alanı</dt><dd><%= garage.specialty %></dd></div>
             <div><dt>İlgilendiği markalar</dt><dd><%= garage.brands %></dd></div>

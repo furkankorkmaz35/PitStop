@@ -33,3 +33,11 @@
   .vehicle-card { padding: 22px; }
   .catalog-heading { padding-top: 0; }
 }
+
+/* Canlı Arama ve AJAX Gösterge Stilleri */
+.catalog-search__meta { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+.catalog-search__meta .catalog-search__hint { margin: 0; }
+.catalog-live-status { display: inline-flex; align-items: center; gap: 6px; font-size: var(--text-xs); color: var(--color-success); font-weight: 500; }
+.catalog-live-status--loading { color: var(--color-warning); animation: catalogPulse 1s infinite alternate; }
+.catalog-live-status--error { color: #f87171; }
+@keyframes catalogPulse { from { opacity: .5; } to { opacity: 1; } }

@@ -212,3 +212,61 @@ test('vehicle comparison accepts query parameters for custom vehicles', async ()
   assert.ok(html.includes('184 bg'));
   assert.ok(html.includes('+59 bg daha güçlü') || html.includes('BMW 3 Serisi vs Honda Civic'));
 });
+
+// İleri Web Programlama API Testi:
+// /api/vehicles RESTful JSON uç noktasının doğru başlıklarla (application/json),
+// doğru filtreleme mantığıyla ve JSON veri formatıyla çalıştığını doğrular.
+test('API /api/vehicles returns filtered json data with proper headers', async () => {
+  // 1. Tüm araçlar sorgusu
+  const allResponse = await fetch(baseUrl + '/api/vehicles');
+  assert.equal(allResponse.status, 200);
+  assert.match(allResponse.headers.get('content-type'), /application\/json/);
+  const allData = await allResponse.json();
+  assert.equal(allData.success, true);
+  assert.equal(allData.count, 14);
+  assert.equal(allData.vehicles.length, 14);
+
+  // 2. Filtreli sorgu (Toyota)
+  const toyotaResponse = await fetch(baseUrl + '/api/vehicles?brand=Toyota');
+  const toyotaData = await toyotaResponse.json();
+  assert.equal(toyotaData.count, 1);
+  assert.equal(toyotaData.vehicles[0].brand, 'Toyota');
+  assert.equal(toyotaData.vehicles[0].model, 'Corolla');
+
+  // 3. Eşleşmeyen sorgu (0 sonuç)
+  const emptyResponse = await fetch(baseUrl + '/api/vehicles?brand=OlmayanMarka');
+  const emptyData = await emptyResponse.json();
+  assert.equal(emptyData.count, 0);
+  assert.equal(emptyData.vehicles.length, 0);
+});
+
+// İleri Web Programlama Harita & Coğrafi Veri Testi:
+// /api/garages RESTful JSON uç noktasının enlem ve boylam (lat/lng) koordinatlarıyla,
+// doğru coğrafi verileri ve şehir filtrelemesini sağladığını doğrular.
+test('API /api/garages returns geo-located garage data with coordinates', async () => {
+  // 1. Tüm servisler ve koordinat doğrulaması
+  const response = await fetch(baseUrl + '/api/garages');
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get('content-type'), /application\/json/);
+  const data = await response.json();
+  assert.equal(data.success, true);
+  assert.equal(data.count, 9);
+  assert.ok(typeof data.garages[0].lat === 'number');
+  assert.ok(typeof data.garages[0].lng === 'number');
+
+  // 2. Şehir filtresi doğrulaması (Ankara)
+  const ankaraResponse = await fetch(baseUrl + '/api/garages?city=ankara');
+  const ankaraData = await ankaraResponse.json();
+  assert.equal(ankaraData.count, 2);
+  assert.ok(ankaraData.garages.every(g => g.city === 'Ankara'));
+});
+
+test('garage finder page embeds interactive map container and assets', async () => {
+  const html = await page('/Review/GarageFinder');
+  assert.ok(html.includes('id="garage-map"'));
+  assert.ok(html.includes('id="garageMapWrapper"'));
+  assert.ok(html.includes('/build/leaflet/leaflet.css'));
+  assert.ok(html.includes('/build/garageMap.js'));
+  assert.ok(html.includes('data-city="istanbul"'));
+  assert.ok(html.includes('Haritada Gör 📍'));
+});

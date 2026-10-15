@@ -12,7 +12,7 @@
         <%- include('../components/button', { label: 'Araçları bul', buttonType: 'submit' }) %>
         <% if (hasFilters) { %><a class="button button--secondary" href="/Vehicle/Catalog">Temizle</a><% } %>
     </form>
-    <p class="catalog-search__hint">Marka veya motor adının bir kısmını yazabilirsin.</p>
+    <div class="catalog-search__meta"><p class="catalog-search__hint">Marka veya motor adının bir kısmını yazabilirsin.</p><span id="live-search-status" class="catalog-live-status" aria-live="polite">⚡ Canlı Filtreleme Aktif</span></div>
 </section>
 <section class="section" aria-labelledby="results-title">
     <div class="section-head"><div><p class="eyebrow">KEŞİF LİSTEN</p><h2 id="results-title"><%= hasFilters ? 'Arama sonuçları' : 'Araçları yakından tanı' %></h2></div><span class="catalog-count"><%= vehicles.length %> araç</span></div>
