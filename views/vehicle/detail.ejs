@@ -19,6 +19,31 @@
     <%- include('../components/featureCard', { number: '01', heading: 'Bakım kayıtları', description: 'Örnek bakım işlemlerini, kullanılan parçaları ve maliyetleri incele.', href: '/Maintenance/Logs', label: 'Kayıtlara göz at' }) %>
     <%- include('../components/featureCard', { number: '02', heading: 'Bakım rehberleri', description: 'Temel bakım konularını, zorluk seviyelerini ve tahmini süreleri keşfet.', href: '/Maintenance/Guide', label: 'Rehberleri keşfet' }) %>
     <%- include('../components/featureCard', { number: '03', heading: 'Parça incelemeleri', description: 'Orijinal ve yan sanayi parça seçeneklerinin artı ve eksilerine bak.', href: '/Review/PartReviews', label: 'İncelemeleri aç' }) %>
-</div></section>
-<section class="vehicle-community section" aria-labelledby="community-title"><div><p class="eyebrow">KULLANICI DENEYİMLERİ</p><h2 id="community-title">Deneyimler için bir başlangıç.</h2><p>Bu model için henüz kullanıcı yorumu bulunmuyor. Şu an gördüğün bilgiler örnek kayıtlardan oluşuyor; yorum gönderme özelliği henüz açık değil.</p></div><%- include('../components/linkButton', { href: '/Vehicle/Catalog', label: 'Kataloğa dön', variant: 'secondary' }) %></section>
+<section class="vehicle-community section" aria-labelledby="community-title">
+    <div class="section-head" style="margin-bottom: var(--space-4);">
+        <div>
+            <p class="eyebrow">TOPLULUK & KULLANICI KATKILARI</p>
+            <h2 id="community-title"><%= vehicle.brand %> <%= vehicle.model %> İçin Bakım & Deneyim Kayıtları</h2>
+        </div>
+        <!-- Veri giriş sayfasına aracı hazır parametre ile taşıyan HtmlHelper bağlantısı -->
+        <%- Html.ActionLink('+ Bu Araca Bakım Kaydı Ekle', '/Maintenance/Create?vehicle=' + encodeURIComponent(vehicle.brand + ' ' + vehicle.model), { class: 'button button--secondary button--sm' }) %>
+    </div>
+
+    <% if (typeof userLogs !== 'undefined' && userLogs && userLogs.length > 0) { %>
+        <p class="muted">Aşağıdaki kayıtlar doğrudan araç sahipleri tarafından form (HtmlHelpers) aracılığıyla siteye eklenmiştir:</p>
+        <div class="user-logs-grid" style="display: grid; gap: var(--space-4); margin-bottom: var(--space-5);">
+            <% userLogs.forEach(userLog => { %>
+                <!-- PARTIAL VIEW KULLANIMI: Başka sayfada girilen veriyi bu araç detay sayfasında _UserLogCard ile render et -->
+                <%- Html.Partial('partials/_UserLogCard', userLog) %>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <p class="muted">Bu model için henüz kullanıcı tarafından eklenmiş bir bakım kaydı bulunmuyor. Form üzerinden ilk kaydı siz ekleyebilirsiniz.</p>
+    <% } %>
+
+    <div style="margin-top: var(--space-4);">
+        <%- include('../components/linkButton', { href: '/Vehicle/Catalog', label: 'Kataloğa dön', variant: 'secondary' }) %>
+    </div>
+</section>
 <%- include('../partials/footer') %>
+

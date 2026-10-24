@@ -1,12 +1,48 @@
 <%- include('../partials/header') %>
+<!--
+  SAYFA B: VERİ GÖRÜNTÜLEME SAYFASI (/Maintenance/Logs)
+  
+  Mimari Özellikler ve İstek Karşılamaları:
+  1. Sayfalar Arası Doğrudan Veri Erişimi:
+     Kullanıcının "/Maintenance/Create" sayfasından girdiği veriler, form gönderildikten sonra
+     bu sayfada ("Topluluk Bakım Girişleri" bölümünde) doğrudan ve anında listelenmektedir.
+  2. ViewComponent Kullanımı:
+     QuickStatsViewComponent, sayfa controller'ından bağımsız olarak canlı metrikleri
+     (araç, toplam bakım, kullanıcı katkısı ve ortalama maliyet) hesaplar ve ekrana basar.
+  3. PartialView Kullanımı:
+     - Başarı bildirimi için `_Alert.ejs` PartialView'ı çağrılır.
+     - Form aracılığıyla doğrudan eklenen her bir kullanıcı kaydı için `_UserLogCard.ejs` PartialView'ı çağrılır.
+-->
+
 <section class="maintenance-heading" aria-labelledby="maintenance-title">
     <div>
-        <p class="eyebrow">BAKIM GEÇMİŞİ</p>
+        <p class="eyebrow">BAKIM GEÇMİŞİ & TOPLULUK VERİLERİ</p>
         <h1 id="maintenance-title">Her bakımın bir kaydı olsun.</h1>
         <p>İşlem, parça ve servis bilgilerini bir arada incele. Bakım harcamalarının nereye gittiğini gör.</p>
     </div>
-    <%- include('../components/linkButton', { href: '/Maintenance/Guide', label: 'Bakım rehberlerini keşfet', variant: 'secondary' }) %>
+    <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; align-items: center;">
+        <!-- Veri giriş sayfasına yönlendiren buton -->
+        <%- include('../components/linkButton', { href: '/Maintenance/Create', label: '+ Yeni Bakım Ekle', variant: 'primary' }) %>
+        <%- include('../components/linkButton', { href: '/Maintenance/Guide', label: 'Bakım rehberlerini keşfet', variant: 'secondary' }) %>
+    </div>
 </section>
+
+<!-- 1. PARTIAL VIEW KULLANIMI: Form başarıyla gönderildiğinde gösterilen başarı uyarısı -->
+<% if (typeof success !== 'undefined' && success) { %>
+    <%- Html.Partial('partials/_Alert', {
+        type: 'success',
+        title: 'İşlem Başarılı! Veriniz Sisteme Kaydedildi.',
+        message: (typeof addedVehicle !== 'undefined' && addedVehicle ? addedVehicle + ' için girdiğiniz' : 'Girdiğiniz') + ' bakım kaydı anında sisteme eklendi ve aşağıdaki "Topluluk Bakım Girişleri" alanında doğrudan listelenmektedir.'
+    }) %>
+<% } %>
+
+<!-- 2. VIEWCOMPONENT KULLANIMI: QuickStatsViewComponent -->
+<!-- Controller'dan bağımsız olarak canlı platform ve bakım istatistiklerini derler ve sunar -->
+<div style="margin-bottom: var(--space-6);">
+    <%- Component.Invoke('QuickStats', {
+        title: 'Platform Canlı Metrikleri ve Bakım İstatistikleri'
+    }) %>
+</div>
 
 <section class="maintenance-stats" aria-label="Örnek kayıtların özeti">
     <%- include('../components/statCard', { label: 'BAKIM MALİYETİ', value: 'Toplam ₺' + totalCost.toLocaleString('tr-TR'), hint: 'Listelenen örnek işlemlerin toplamı' }) %>
@@ -14,6 +50,33 @@
     <%- include('../components/statCard', { label: 'VERİ KAPSAMI', value: 'Demo garaj', hint: 'Kişisel araç veya servis kaydı değildir' }) %>
 </section>
 
+<!-- SÜRÜCÜLER VE KULLANICILAR TARAFINDAN FORMDAN DOĞRUDAN EKLENEN VERİLER -->
+<!-- Bir sayfadan (/Maintenance/Create) girilen verilerin doğrudan başka bir sayfada görüntülenmesi -->
+<section class="section" id="user-logs-section" aria-labelledby="user-logs-title" style="margin-top: var(--space-7);">
+    <div class="section-head">
+        <div>
+            <p class="eyebrow">CANLI VERİ AKIŞI · FORM GİRİŞLERİ</p>
+            <h2 id="user-logs-title">Kullanıcıların Eklediği Canlı Bakım Kayıtları</h2>
+        </div>
+        <%- Html.ActionLink('+ Yeni Kayıt Ekle', '/Maintenance/Create', { class: 'button button--secondary button--sm' }) %>
+    </div>
+    <p class="muted">Aşağıdaki kayıtlar doğrudan site üzerinden form elemanları (HtmlHelpers) kullanılarak eklenmiştir ve anında bu sayfada listelenmektedir:</p>
+
+    <div class="user-logs-grid" style="display: grid; gap: var(--space-4); margin-top: var(--space-4);">
+        <% if (typeof userLogs !== 'undefined' && userLogs && userLogs.length > 0) { %>
+            <% userLogs.forEach(userLog => { %>
+                <!-- 3. PARTIAL VIEW KULLANIMI: Her kullanıcı kaydı _UserLogCard PartialView ile render edilir -->
+                <%- Html.Partial('partials/_UserLogCard', userLog) %>
+            <% }) %>
+        <% } else { %>
+            <div class="card" style="padding: var(--space-5); text-align: center;">
+                <p class="muted" style="margin: 0;">Henüz kullanıcı tarafından eklenmiş bir bakım kaydı bulunmuyor. İlk kaydı siz ekleyebilirsiniz!</p>
+            </div>
+        <% } %>
+    </div>
+</section>
+
+<!-- SİSTEMİN STATİK ÖRNEK VERİLERİ (Geriye Dönük Uyumluluk ve Testler İçin) -->
 <section class="section" aria-labelledby="logs-title">
     <div class="section-head">
         <div><p class="eyebrow">İŞLEM DÖKÜMÜ</p><h2 id="logs-title">Bakım kayıtları</h2></div>

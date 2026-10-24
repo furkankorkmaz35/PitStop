@@ -29,6 +29,12 @@
     <div><p class="eyebrow">PITSTOP NEDİR?</p><h2 id="about-title">Daha çok bilgi.<br />Daha bilinçli kararlar.</h2></div>
     <div><p>Bir otomobili tanımak, marka ve modelini bilmekten fazlası. Motor özellikleri, dikkat edilmesi gereken noktalar, bakım işlemleri ve parça tercihleri de bu hikâyenin parçası.</p><p>PitStop bu bilgileri anlaşılır bir rehberde bir araya getirir. İster kendi aracını daha iyi tanımak iste, ister başka bir modeli araştır.</p><a class="arrow" href="/Home/About">Proje hakkında daha fazlası ↗</a></div>
 </section>
+<!-- VIEWCOMPONENT KULLANIMI (Farklı sayfada kullanım):
+     Ana sayfada sayfa controller'ından tamamen bağımsız olarak canlı metrikleri hesaplar ve sunar. -->
+<section class="section" aria-labelledby="live-metrics-title">
+    <div class="section-head"><p class="eyebrow">CANLI METRİKLER · VIEWCOMPONENT</p><h2 id="live-metrics-title">Platform Canlı Durum Özeti</h2></div>
+    <%- Component.Invoke('QuickStats', { title: 'PitStop Canlı Garaj ve Bakım Metrikleri' }) %>
+</section>
 <section class="home-directory section" aria-labelledby="features-title">
     <div class="section-head"><p class="eyebrow">KEŞİF DİZİNİ / 01—04</p><h2 id="features-title">Nereden başlayalım?</h2></div>
     <a class="directory-row" href="/Vehicle/Catalog"><span>01</span><h3>Araç atlası</h3><p>Motor, teknik özellikler ve model notları.</p><span aria-hidden="true">↗</span></a>

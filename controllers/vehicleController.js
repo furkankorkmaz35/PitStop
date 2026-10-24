@@ -1,4 +1,5 @@
 import { vehicles, maintenanceLogs } from '../data/demoData.js';
+import { userLogStore } from '../data/userLogStore.js';
 
 // Katalog sayfası: Marka ve motor filtrelerine göre araçları listeler
 export function catalog(req, res) {
@@ -11,11 +12,20 @@ export function catalog(req, res) {
   res.render('vehicle/catalog', { title: 'Araç Kataloğu', vehicles: filteredVehicles, filters: { brand, engine }, hasFilters: Boolean(brand.trim() || engine.trim()) });
 }
 
-// Araç detay sayfası: Belirtilen aracın tüm teknik özelliklerini ve model notunu gösterir
+// Araç detay sayfası: Belirtilen aracın tüm teknik özelliklerini, model notunu ve kullanıcı kayıtlarını gösterir
 export function detail(req, res) {
   const { brand = 'Toyota', model = 'Corolla' } = req.query;
   const vehicle = vehicles.find(item => item.brand === brand && item.model === model);
-  res.render('vehicle/detail', { title: 'Araç Detayı', vehicle: vehicle ?? vehicles[0] });
+  const targetVehicle = vehicle ?? vehicles[0];
+
+  // Kullanıcıların başka sayfada (/Maintenance/Create) girdiği verilerden bu araca ait olanları çek
+  const userLogs = userLogStore.getUserLogsByVehicle(targetVehicle.brand, targetVehicle.model);
+
+  res.render('vehicle/detail', {
+    title: 'Araç Detayı',
+    vehicle: targetVehicle,
+    userLogs
+  });
 }
 
 /**

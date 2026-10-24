@@ -7,6 +7,10 @@ import maintenanceRoutes from './routes/maintenanceRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import accountRoutes from './routes/accountRoutes.js';
 import { attachDemoUser } from './controllers/accountController.js';
+import { HtmlHelper } from './services/htmlHelper.js';
+import { ViewComponentManager } from './services/viewComponents/ViewComponentManager.js';
+import { QuickStatsViewComponent } from './services/viewComponents/QuickStatsViewComponent.js';
+import { RecentActivityViewComponent } from './services/viewComponents/RecentActivityViewComponent.js';
 
 const directory = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -35,6 +39,17 @@ app.use(attachDemoUser);
 app.use((req, res, next) => {
   res.locals.currentPath = req.path.toLowerCase().replace(/\/$/, '') || '/';
   res.locals.assetVersion = Date.now();
+
+  const viewsDir = path.join(directory, 'views');
+  // ASP.NET MVC mimarisindeki HtmlHelper motorunu şablonlara bağla (@Html.*)
+  res.locals.Html = new HtmlHelper(viewsDir, res.locals);
+
+  // ASP.NET Core MVC mimarisindeki ViewComponent motorunu şablonlara bağla (@Component.Invoke)
+  const componentManager = new ViewComponentManager(viewsDir, res.locals);
+  componentManager.register(new QuickStatsViewComponent());
+  componentManager.register(new RecentActivityViewComponent());
+  res.locals.Component = componentManager;
+
   next();
 });
 app.use('/', homeRoutes);

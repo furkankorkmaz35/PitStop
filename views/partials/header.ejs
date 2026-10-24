@@ -29,6 +29,7 @@
                  { href: '/', label: 'Ana Sayfa', active: ['/', '/home', '/home/index'].includes(path) },
                  { href: '/Vehicle/Catalog', label: 'Araç Kataloğu', active: path.startsWith('/vehicle'), parent: ['/vehicle/detail', '/vehicle/compare'].includes(path) },
                  { href: '/Maintenance/Logs', label: 'Bakım Kayıtları', active: ['/maintenance', '/maintenance/logs'].includes(path) },
+                 { href: '/Maintenance/Create', label: '+ Kayıt Ekle', active: ['/maintenance/create', '/maintenance/new'].includes(path) },
                  { href: '/Maintenance/Guide', label: 'DIY Rehber', active: path === '/maintenance/guide' },
                  { href: '/Review/PartReviews', label: 'Parça İnceleme', active: ['/review', '/review/partreviews'].includes(path) },
                  { href: '/Review/GarageFinder', label: 'Servis Bul', active: path === '/review/garagefinder' },

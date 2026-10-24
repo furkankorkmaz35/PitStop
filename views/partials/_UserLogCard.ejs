@@ -1,0 +1,57 @@
+<!--
+  PARTIAL VIEW: _UserLogCard.ejs
+  Mimari Rol: PartialView (Kısmi Görünüm)
+  
+  PartialView Mantığı:
+  Bu kısmi görünüm, kendisine parametre olarak iletilen `model` (veya `log`) nesnesini
+  standart bir kart düzeninde formatlar.
+  
+  Kullanım Senaryoları (Farklı sayfalarda uygun kullanım):
+  1. /Maintenance/Logs (Bakım Kayıtları Sayfası): Kullanıcıların site üzerinden doğrudan eklediği
+     tüm bakım işlemlerini listelemek için döngü içinde çağrılır.
+  2. /Vehicle/Detail (Araç Detay Sayfası): İncelenen araca ait kullanıcıların girdiği bakım deneyimlerini
+     aracın kendi detay sayfasında göstermek için çağrılır.
+  
+  Çağrılma Şekli (HtmlHelper ile):
+  Html.Partial('partials/_UserLogCard', log)
+-->
+<%
+  const item = typeof log !== 'undefined' ? log : (typeof model !== 'undefined' ? model : {});
+%>
+<article class="partial-view user-log-card card" style="display: flex; flex-direction: column; gap: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); padding: var(--space-5); position: relative; transition: border-color var(--motion-fast);">
+    <header class="user-log-card__header" style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-2);">
+        <div>
+            <div style="display: flex; align-items: center; gap: var(--space-2); margin-bottom: 4px;">
+                <span class="tag tag--accent" style="font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.05em;">Kullanıcı Katkısı</span>
+                <time datetime="<%= item.date %>" class="muted" style="font-size: var(--text-xs);"><%= item.date %></time>
+                <span class="muted" style="font-size: var(--text-xs);">· <%= item.author || 'Sürücü' %></span>
+            </div>
+            <h3 style="margin: 0; font-size: 1.2rem; color: var(--color-text);"><%= item.vehicle %></h3>
+        </div>
+        <div class="user-log-card__cost" style="text-align: right;">
+            <span class="eyebrow" style="display: block; margin: 0; font-size: 0.6875rem;">MALİYET</span>
+            <strong style="color: var(--color-accent); font-size: 1.3rem;">₺<%= Number(item.cost || 0).toLocaleString('tr-TR') %></strong>
+        </div>
+    </header>
+
+    <div class="user-log-card__body" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3); padding: var(--space-3) var(--space-4); background: var(--color-raised); border-radius: var(--radius-sm); font-size: var(--text-xs);">
+        <div>
+            <span class="muted" style="display: block; margin-bottom: 2px;">Yapılan İşlem:</span>
+            <strong style="color: var(--color-text); font-size: var(--text-sm);"><%= item.operation %></strong>
+        </div>
+        <div>
+            <span class="muted" style="display: block; margin-bottom: 2px;">Kullanılan Parça:</span>
+            <span style="color: var(--color-text);"><%= item.part %></span>
+        </div>
+        <div>
+            <span class="muted" style="display: block; margin-bottom: 2px;">Servis / Usta:</span>
+            <span class="tag" style="padding: 2px 8px; font-size: 0.6875rem;"><%= item.service || 'Özel Servis' %></span>
+        </div>
+    </div>
+
+    <% if (item.notes) { %>
+    <footer class="user-log-card__notes" style="border-top: 1px solid var(--color-border); padding-top: var(--space-3); font-size: var(--text-sm); color: var(--color-muted);">
+        <p style="margin: 0; line-height: 1.5;"><strong style="color: var(--color-text); font-size: var(--text-xs);">Sürücü Yorumu:</strong> “<%= item.notes %>”</p>
+    </footer>
+    <% } %>
+</article>

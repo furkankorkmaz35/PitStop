@@ -1,0 +1,43 @@
+<!--
+  PARTIAL VIEW: _Alert.ejs
+  Mimari Rol: PartialView (Kısmi Görünüm)
+  
+  PartialView Mantığı:
+  Bu görünüm, ViewComponent'in aksine kendi veri çekme mantığına sahip DEĞİLDİR.
+  Kendisini çağıran ana view'dan (örn: Bakım Kayıtları, Yeni Kayıt Ekleme) aldığı `model` veya parametreleri
+  formatlayarak render eder.
+  
+  Kullanım Senaryoları:
+  1. /Maintenance/Create: Form doldurma aşamasında kullanıcıya rehberlik ve uyarı mesajı sunmak.
+  2. /Maintenance/Logs: Form başarıyla gönderildikten sonra "Kayıt başarıyla eklendi!" onayını göstermek.
+  3. /Vehicle/Detail: İlgili araca ait kullanıcı verileri hakkında bilgilendirme sunmak.
+-->
+<% 
+  const alertType = (typeof type !== 'undefined' ? type : (typeof alert !== 'undefined' && alert.type ? alert.type : (typeof model !== 'undefined' && model.type ? model.type : 'info')));
+  const alertMsg = (typeof message !== 'undefined' ? message : (typeof alert !== 'undefined' && alert.message ? alert.message : (typeof model !== 'undefined' && model.message ? model.message : '')));
+  const alertTitle = (typeof title !== 'undefined' ? title : (typeof alert !== 'undefined' && alert.title ? alert.title : (typeof model !== 'undefined' && model.title ? model.title : '')));
+  
+  const borderColors = {
+    success: 'var(--color-success, #22c55e)',
+    info: 'var(--color-accent, #ff6b35)',
+    warning: 'var(--color-warning, #f59e0b)',
+    error: '#ef4444'
+  };
+  const iconMap = {
+    success: '✓',
+    info: 'ℹ',
+    warning: '⚠',
+    error: '✕'
+  };
+%>
+<% if (alertMsg) { %>
+<aside class="partial-view alert-banner alert--<%= alertType %>" role="<%= alertType === 'error' ? 'alert' : 'status' %>" style="display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-4) var(--space-5); margin-bottom: var(--space-5); border: 1px solid var(--color-border); border-left: 4px solid <%= borderColors[alertType] || borderColors.info %>; border-radius: var(--radius-sm); background: var(--color-surface);">
+    <span class="alert__icon" aria-hidden="true" style="font-weight: 700; font-size: 1.1rem; color: <%= borderColors[alertType] || borderColors.info %>;"><%= iconMap[alertType] || 'ℹ' %></span>
+    <div class="alert__content" style="flex: 1;">
+        <% if (alertTitle) { %>
+            <strong class="alert__title" style="display: block; margin-bottom: 2px; color: var(--color-text); font-size: var(--text-sm);"><%= alertTitle %></strong>
+        <% } %>
+        <span class="alert__message" style="color: var(--color-text); font-size: var(--text-sm); line-height: 1.5;"><%= alertMsg %></span>
+    </div>
+</aside>
+<% } %>

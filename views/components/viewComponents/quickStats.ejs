@@ -1,0 +1,47 @@
+<!--
+  VIEWCOMPONENT GÖRÜNÜMÜ: quickStats.ejs
+  Mimari Rol: ViewComponent Şablonu
+  
+  Bu görünüm, QuickStatsViewComponent tarafından bağımsız olarak hesaplanan canlı metrikleri
+  ekrana basar. Sayfanın Controller'ından hiçbir model verisi beklemez; tamamen bağımsızdır.
+  
+  Gösterildiği Uygun Senaryolar:
+  1. Ana Sayfa (/Home/Index): Canlı platform büyüklüğünü sergilemek.
+  2. Bakım Kayıtları (/Maintenance/Logs): Genel bakım kayıtları ve ortalama maliyet özetini vermek.
+  3. Yeni Kayıt Sayfası (/Maintenance/Create): Toplam kayıt ve kullanıcı katkı metriklerini hatırlatmak.
+-->
+<div class="viewcomponent-card quick-stats-box" role="region" aria-label="Canlı Platform İstatistikleri" style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-5); margin-bottom: var(--space-5);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); flex-wrap: wrap; gap: var(--space-2);">
+        <div>
+            <p class="eyebrow" style="margin: 0; font-size: 0.6875rem;">VIEWCOMPONENT · CANLI VERİ MOTORU</p>
+            <h3 style="margin: 4px 0 0; font-size: 1.2rem; color: var(--color-text);"><%= title %></h3>
+        </div>
+        <span class="tag tag--accent" style="font-size: 0.6875rem; letter-spacing: 0.05em;">Bağımsız Yaşam Döngüsü</span>
+    </div>
+
+    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--space-3);">
+        <div class="stat-mini" style="background: var(--color-raised); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); border: 1px solid var(--color-border);">
+            <span class="muted" style="font-size: var(--text-xs); display: block;">Kayıtlı Araçlar</span>
+            <strong style="font-size: 1.35rem; color: var(--color-text); display: block; margin-top: 2px;"><%= totalVehicles %> model</strong>
+            <small class="muted" style="font-size: 0.6875rem;">Katalog veri tabanı</small>
+        </div>
+
+        <div class="stat-mini" style="background: var(--color-raised); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); border: 1px solid var(--color-border);">
+            <span class="muted" style="font-size: var(--text-xs); display: block;">Toplam Bakım Kaydı</span>
+            <strong style="font-size: 1.35rem; color: var(--color-text); display: block; margin-top: 2px;"><%= totalLogs %> işlem</strong>
+            <small class="muted" style="font-size: 0.6875rem;"><%= systemLogsCount %> örnek + <%= userLogsCount %> kullanıcı</small>
+        </div>
+
+        <div class="stat-mini" style="background: var(--color-raised); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); border: 1px solid var(--color-border); border-left: 3px solid var(--color-accent);">
+            <span class="muted" style="font-size: var(--text-xs); display: block;">Topluluk Girişleri</span>
+            <strong style="font-size: 1.35rem; color: var(--color-accent); display: block; margin-top: 2px;"><%= userLogsCount %> canlı</strong>
+            <small class="muted" style="font-size: 0.6875rem;">Form ile eklenen veriler</small>
+        </div>
+
+        <div class="stat-mini" style="background: var(--color-raised); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); border: 1px solid var(--color-border);">
+            <span class="muted" style="font-size: var(--text-xs); display: block;">Ort. Bakım Maliyeti</span>
+            <strong style="font-size: 1.35rem; color: var(--color-text); display: block; margin-top: 2px;">₺<%= avgCost.toLocaleString('tr-TR') %></strong>
+            <small class="muted" style="font-size: 0.6875rem;">İşlem başına genel ortalama</small>
+        </div>
+    </div>
+</div>

@@ -270,3 +270,109 @@ test('garage finder page embeds interactive map container and assets', async () 
   assert.ok(html.includes('data-city="istanbul"'));
   assert.ok(html.includes('Haritada Gör 📍'));
 });
+
+// ViewComponent Testi: QuickStatsViewComponent'in Ana Sayfa (/), Bakım Kayıtları (/Maintenance/Logs)
+// ve Yeni Kayıt (/Maintenance/Create) sayfalarında bağımsız iş mantığıyla render edildiğini doğrular.
+test('QuickStats ViewComponent renders live statistics independently across multiple pages', async () => {
+  // 1. Ana Sayfada ViewComponent doğrulaması
+  const homeHtml = await page('/');
+  assert.ok(homeHtml.includes('CANLI METRİKLER · VIEWCOMPONENT') || homeHtml.includes('VIEWCOMPONENT · CANLI VERİ MOTORU'));
+  assert.ok(homeHtml.includes('Kayıtlı Araçlar'));
+  assert.ok(homeHtml.includes('Toplam Bakım Kaydı'));
+
+  // 2. Bakım Kayıtları sayfasında ViewComponent doğrulaması
+  const logsHtml = await page('/Maintenance/Logs');
+  assert.ok(logsHtml.includes('Platform Canlı Metrikleri ve Bakım İstatistikleri'));
+  assert.ok(logsHtml.includes('Bağımsız Yaşam Döngüsü'));
+
+  // 3. Yeni Kayıt sayfasında ViewComponent doğrulaması
+  const createHtml = await page('/Maintenance/Create');
+  assert.ok(createHtml.includes('Canlı Garaj Verileri'));
+});
+
+// HtmlHelpers & Form Testi: /Maintenance/Create sayfasındaki form elemanlarının
+// (Form etiketi, Label, TextBox, DropDownList, TextArea, SubmitButton) HtmlHelpers ile üretildiğini doğrular.
+test('maintenance create page generates form elements using HtmlHelpers and PartialView alert', async () => {
+  const html = await page('/Maintenance/Create');
+  assert.ok(html.includes('action="/Maintenance/Create" method="POST"'));
+  assert.ok(html.includes('name="vehicle"'));
+  assert.ok(html.includes('name="operation"'));
+  assert.ok(html.includes('name="part"'));
+  assert.ok(html.includes('name="service"'));
+  assert.ok(html.includes('name="cost"'));
+  assert.ok(html.includes('name="notes"'));
+  assert.ok(html.includes('type="submit"'));
+  // _Alert PartialView doğrulaması
+  assert.ok(html.includes('Sayfalar Arası Doğrudan Veri Akışı'));
+});
+
+// Sayfalar Arası Veri Akışı & PartialView Testi:
+// 1. Kullanıcı /Maintenance/Create sayfasından form elemanları ile yeni bir bakım kaydı girer (POST).
+// 2. Sunucu bu veriyi kaydeder ve kullanıcıyı /Maintenance/Logs sayfasına yönlendirir.
+// 3. /Maintenance/Logs sayfasında girilen veri _UserLogCard PartialView'ı ile DOĞRUDAN görünür.
+// 4. İlgili aracın detay sayfasında (/Vehicle/Detail) bu veri DOĞRUDAN görünür.
+test('user entered data from form page is directly visible on logs page and vehicle detail page', async () => {
+  const formPayload = new URLSearchParams({
+    vehicle: 'BMW 3 Serisi',
+    operation: 'Triger & Devirdaim Bakımı',
+    part: 'Orijinal BMW Kayış Kiti',
+    service: 'Özel Servis',
+    cost: '7850',
+    date: '24.10.2026',
+    notes: 'Yetkili servis yerine tanınan BMW özel servisinde yaptırıldı, performans mükemmel.'
+  });
+
+  // 1. Formu POST et
+  const postResponse = await fetch(baseUrl + '/Maintenance/Create', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: formPayload.toString(),
+    redirect: 'manual'
+  });
+
+  assert.equal(postResponse.status, 302);
+  const redirectLocation = postResponse.headers.get('location');
+  assert.ok(redirectLocation.includes('/Maintenance/Logs'));
+  assert.ok(redirectLocation.includes('success=1'));
+
+  // 2. Yönlenilen Bakım Kayıtları sayfasını (/Maintenance/Logs) aç ve verinin DOĞRUDAN listelendiğini doğrula
+  const logsPageResponse = await fetch(baseUrl + redirectLocation);
+  assert.equal(logsPageResponse.status, 200);
+  const logsHtml = await logsPageResponse.text();
+
+  assert.ok(logsHtml.includes('BMW 3 Serisi'), 'Girilen araç adı Bakım Kayıtları sayfasında doğrudan görünmeli');
+  assert.ok(logsHtml.includes('Triger &amp; Devirdaim Bakımı') || logsHtml.includes('Triger & Devirdaim Bakımı'));
+  assert.ok(logsHtml.includes('7.850'), 'Girilen maliyet doğrudan görünmeli');
+  assert.ok(logsHtml.includes('Orijinal BMW Kayış Kiti'), 'Girilen parça doğrudan görünmeli');
+  assert.ok(logsHtml.includes('Yetkili servis yerine tanınan BMW özel servisinde yaptırıldı'));
+  assert.ok(logsHtml.includes('Kullanıcı Katkısı'), 'PartialView rozeti bulunmalı');
+
+  // 3. BMW 3 Serisi Detay sayfasını (/Vehicle/Detail) aç ve verinin orada da DOĞRUDAN listelendiğini doğrula
+  const detailHtml = await page('/Vehicle/Detail?brand=BMW&model=3%20Serisi');
+  assert.ok(detailHtml.includes('BMW 3 Serisi'));
+  assert.ok(detailHtml.includes('Triger &amp; Devirdaim Bakımı') || detailHtml.includes('Triger & Devirdaim Bakımı'));
+  assert.ok(detailHtml.includes('7.850'));
+  assert.ok(detailHtml.includes('Orijinal BMW Kayış Kiti'));
+});
+
+// Form Doğrulama Testi: Hatalı veya eksik veri girildiğinde 400 Bad Request dönmeli ve hata mesajları gösterilmeli
+test('form validation prevents empty submissions and displays validation messages', async () => {
+  const invalidPayload = new URLSearchParams({
+    vehicle: '',
+    operation: '',
+    part: '',
+    cost: '-10'
+  });
+
+  const response = await fetch(baseUrl + '/Maintenance/Create', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: invalidPayload.toString()
+  });
+
+  assert.equal(response.status, 400);
+  const html = await response.text();
+  assert.ok(html.includes('field-validation-error'));
+  assert.ok(html.includes('Lütfen geçerli bir araç marka ve modeli giriniz'));
+});
+

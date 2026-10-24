@@ -1,0 +1,126 @@
+<%- include('../partials/header') %>
+<!--
+  SAYFA A: YENİ VERİ GİRİŞ SAYFASI (/Maintenance/Create)
+  
+  Mimari Özellikler ve İstek Karşılamaları:
+  1. HtmlHelpers Kullanımı:
+     Bu sayfadaki form etiketleri ve tüm form elemanları (Form, Label, TextBox, DropDownList,
+     TextArea, ValidationMessage, SubmitButton), ASP.NET MVC standartlarına uygun HtmlHelpers
+     aracılığıyla oluşturulmuştur.
+  2. Sayfalar Arası Veri Aktarımı:
+     Kullanıcının bu form üzerinden girdiği veriler, sunucu tarafında işlenip kaydedildikten sonra
+     başka sayfalarda (Bakım Kayıtları - /Maintenance/Logs ve ilgili Araç Detayı - /Vehicle/Detail)
+     doğrudan görüntülenebilir hale gelmektedir.
+  3. PartialView & ViewComponent Kullanımı:
+     - Bilgilendirme uyarısı _Alert PartialView'ı ile sunulmaktadır.
+     - Yan panelde QuickStats ve RecentActivity ViewComponent'leri bağımsız olarak çağrılmaktadır.
+-->
+
+<nav class="vehicle-breadcrumb" aria-label="Sayfa yolu">
+    <a href="/">Ana sayfa</a><span aria-hidden="true">/</span>
+    <a href="/Maintenance/Logs">Bakım kayıtları</a><span aria-hidden="true">/</span>
+    <span aria-current="page">Yeni Kayıt Ekle</span>
+</nav>
+
+<section class="maintenance-heading" aria-labelledby="create-title">
+    <div>
+        <p class="eyebrow">VERİ GİRİŞİ · HTMLHELPERS & MVC FORMU</p>
+        <h1 id="create-title">Yeni bakım kaydı ekle.</h1>
+        <p>Aracına yaptırdığın işlemi, parça tercihlerini ve maliyetini doğrudan toplulukla paylaş. Girdiğin veriler anında Bakım Kayıtları ve Araç Detay sayfalarında yayınlanır.</p>
+    </div>
+    <%- include('../components/linkButton', { href: '/Maintenance/Logs', label: '← Kayıtlara Geri Dön', variant: 'secondary' }) %>
+</section>
+
+<!-- 1. PARTIAL VIEW KULLANIMI: Bilgilendirme ve mimari akış uyarısı -->
+<%- Html.Partial('partials/_Alert', {
+    type: 'info',
+    title: 'Sayfalar Arası Doğrudan Veri Akışı',
+    message: 'Bu sayfada dolduracağınız form doğrudan sisteme kaydedilecek ve yönlendirileceğiniz "Bakım Kayıtları" (/Maintenance/Logs) ile ilgili "Araç Detayı" (/Vehicle/Detail) sayfalarında anında görüntülenecektir.'
+}) %>
+
+<div style="display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.9fr); gap: var(--space-7); align-items: flex-start; margin-top: var(--space-6);">
+    <!-- FORM BÖLÜMÜ: Form elemanları HtmlHelpers ile üretilmektedir -->
+    <div class="card" style="background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-6);">
+        <h2 style="font-size: 1.35rem; margin-top: 0; margin-bottom: var(--space-4);">Bakım Bilgileri Formu</h2>
+        <p class="muted" style="margin-bottom: var(--space-5);">Lütfen aracınıza ait bakım ayrıntılarını eksiksiz giriniz. Form elemanları güvenli HtmlHelpers ile oluşturulmaktadır.</p>
+
+        <!-- HTMLHELPER: Html.BeginForm() -->
+        <%- Html.BeginForm('/Maintenance/Create', 'POST', { class: 'account-form', id: 'maintenanceForm' }) %>
+            
+            <!-- HTMLHELPER: Html.Label & Html.TextBox -->
+            <div class="field">
+                <%- Html.Label('vehicle', 'Araç Marka ve Modeli *') %>
+                <%- Html.TextBox('vehicle', model.vehicle, { placeholder: 'Örn: Volkswagen Golf 1.6 TDI veya Renault Megane 1.5 dCi', required: true, autocomplete: 'off' }) %>
+                <%- Html.ValidationMessage('vehicle', errors) %>
+            </div>
+
+            <!-- HTMLHELPER: Html.Label & Html.DropDownList -->
+            <div class="field">
+                <%- Html.Label('operation', 'Yapılan Bakım / İşlem Türü *') %>
+                <%- Html.DropDownList('operation', operationOptions, model.operation, { required: true }) %>
+                <%- Html.ValidationMessage('operation', errors) %>
+            </div>
+
+            <!-- HTMLHELPER: Html.Label & Html.TextBox -->
+            <div class="field">
+                <%- Html.Label('part', 'Kullanılan Parça ve Malzemeler *') %>
+                <%- Html.TextBox('part', model.part, { placeholder: 'Örn: 5W-30 Motor Yağı, Orijinal Yağ ve Hava Filtresi Seti', required: true }) %>
+                <%- Html.ValidationMessage('part', errors) %>
+            </div>
+
+            <!-- HTMLHELPER: Html.Label & Html.DropDownList -->
+            <div class="field">
+                <%- Html.Label('service', 'Bakımın Yapıldığı Servis Türü *') %>
+                <%- Html.DropDownList('service', serviceOptions, model.service, { required: true }) %>
+                <%- Html.ValidationMessage('service', errors) %>
+            </div>
+
+            <!-- HTMLHELPER: Html.Label & Html.TextBox (Sayısal Giriş) -->
+            <div class="field">
+                <%- Html.Label('cost', 'İşlem Maliyeti (₺) *') %>
+                <%- Html.TextBox('cost', model.cost, { type: 'number', min: '1', step: '1', placeholder: 'Örn: 4250', required: true }) %>
+                <%- Html.ValidationMessage('cost', errors) %>
+            </div>
+
+            <!-- HTMLHELPER: Html.Label & Html.TextBox (Tarih Girişi) -->
+            <div class="field">
+                <%- Html.Label('date', 'İşlem Tarihi (GG.AA.YYYY)') %>
+                <%- Html.TextBox('date', model.date, { placeholder: 'Örn: 24.10.2026 (Boş bırakılırsa bugünün tarihi kaydedilir)' }) %>
+            </div>
+
+            <!-- HTMLHELPER: Html.Label & Html.TextArea -->
+            <div class="field">
+                <%- Html.Label('notes', 'Sürücü Deneyimi & Tavsiyeler') %>
+                <%- Html.TextArea('notes', model.notes, { rows: 4, placeholder: 'Usta tavsiyesi, parça memnuniyeti, dikkat edilmesi gerekenler veya garanti bilgisi...' }) %>
+                <%- Html.ValidationMessage('notes', errors) %>
+            </div>
+
+            <!-- HTMLHELPER: Html.SubmitButton & Html.ActionLink -->
+            <div style="display: flex; gap: var(--space-3); align-items: center; margin-top: var(--space-4); flex-wrap: wrap;">
+                <%- Html.SubmitButton('Bakım Kaydını Sisteme Ekle ve Yayınla ↗', { class: 'button' }) %>
+                <%- Html.ActionLink('Vazgeç', '/Maintenance/Logs', { class: 'button button--secondary' }) %>
+            </div>
+
+        <!-- HTMLHELPER: Html.EndForm() -->
+        <%- Html.EndForm() %>
+    </div>
+
+    <!-- YAN PANEL: VIEWCOMPONENT'LER BU SAYFADA ÇAĞRILMAKTADIR -->
+    <aside style="display: flex; flex-direction: column; gap: var(--space-5);">
+        <!-- 2. VIEWCOMPONENT ÇAĞRISI: QuickStatsViewComponent -->
+        <!-- Controller verisine bağımlı olmadan kendi istatistiklerini hesaplar -->
+        <%- Component.Invoke('QuickStats', {
+            title: 'Canlı Garaj Verileri',
+            compact: true
+        }) %>
+
+        <!-- 3. VIEWCOMPONENT ÇAĞRISI: RecentActivityViewComponent -->
+        <!-- Sisteme form ile doğrudan eklenen son aktiviteleri listeler -->
+        <%- Component.Invoke('RecentActivity', {
+            title: 'Son Eklenen Kayıtlar',
+            limit: 2
+        }) %>
+    </aside>
+</div>
+
+<%- include('../partials/footer') %>
